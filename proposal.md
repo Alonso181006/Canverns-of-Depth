@@ -6,7 +6,7 @@ Put a description of what you are going to fo here....
 
 - Player movement
 - Player combat
-  -Sword 
+  - Sword 
 - Enemy attacks
 - different levels
 - levels are traversal
