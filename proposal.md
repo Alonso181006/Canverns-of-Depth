@@ -14,7 +14,6 @@ Put a description of what you are going to fo here....
 - death screen
   - restart button
 - enemy that goes to player
-- enemy drops currency
 
 ## Nice to Have List
 
@@ -25,7 +24,6 @@ Put a description of what you are going to fo here....
 - pause button
 - make a phone that you upgrade, sell, and can see instrcutions
 - bow
-- upgrades hud
 
 ## Sprites
 https://krishna-palacio.itch.io/minifantasy-dungeon 
