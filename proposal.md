@@ -15,7 +15,6 @@ Put a description of what you are going to fo here....
   - restart button
 - enemy that goes to player
 - enemy drops currency
-- upgrades hud
 
 ## Nice to Have List
 
@@ -26,6 +25,7 @@ Put a description of what you are going to fo here....
 - pause button
 - make a phone that you upgrade, sell, and can see instrcutions
 - bow
+- upgrades hud
 
 ## Sprites
 https://krishna-palacio.itch.io/minifantasy-dungeon 
