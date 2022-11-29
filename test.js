@@ -17,18 +17,29 @@ function setup(){
 }
 
 class Player{
-  constructor(x,y){
+  constructor(x,y, dx, dy){
     this.x = x;
     this.y = y;
-    this.dx = cellWidth;
-    this.dy = cellHeight;
+    this.dx = 1;
+    this.dy = 1;
   }
   display(){
     fill("red");
     rect(this.x * cellWidth, this.y * cellHeight, cellWidth, cellHeight);
   }
   move(){
-
+    if(keyIsDown(87) ){ //w
+      this.y -= this.dy;
+    }
+    if(keyIsDown(83) ){ //s
+      this.y += this.dy;
+    }
+    if(keyIsDown(65) ){ //a
+      this.x -= this.dx;
+    }
+    if(keyIsDown(68) ){ //w
+      this.x += this.dx;
+    }
   }
 }
 
@@ -38,5 +49,6 @@ function draw(){
 }
 
 function keyPressed(){
-  if(keyIsDown(65))
+  player.display();
+  player.move();
 }
