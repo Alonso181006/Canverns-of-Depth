@@ -17,7 +17,7 @@ function setup(){
 }
 
 class Player{
-  constructor(x,y, dx, dy){
+  constructor(x,y,){
     this.x = x;
     this.y = y;
     this.dx = 1;
