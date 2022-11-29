@@ -16,7 +16,13 @@ Put a description of what you are going to fo here....
 - enemy that goes to player
 
 ## Nice to Have List
-
+- sounds fx
+  -background music
+  -enemies
+  -killing
+  -taking damage
+  -picking up things
+  -breaking stuff
 - health bar
 - enemy drops items/potions
 - can sell items for gold
