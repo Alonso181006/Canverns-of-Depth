@@ -18,8 +18,8 @@ function preload() {
   lines = loadStrings(loadingLevel);
 
   //load images for tiles
-  shell = loadImage("tile000.png");
-  block = loadImage("blockO.png");
+  shell = loadImage("gameSprites/floorTileSprites/tile000.png");
+  block = loadImage("gameSprites/floorTileSprites/tile001.png");
   //load background
 }
 
