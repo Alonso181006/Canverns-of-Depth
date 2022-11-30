@@ -1,6 +1,6 @@
 # Proposal
 
-Put a description of what you are going to fo here....
+Isometric Rogue-like Dungeon Crawler inspired by Moonlighter
 
 ## Needs To Have List
 
@@ -8,14 +8,12 @@ Put a description of what you are going to fo here....
 - Player combat
   - Sword 
 - Enemy attacks
-- different levels
+- different levels (jump from one to the other)
 - levels are traversal
 - health
 - death screen
   - restart button
 - enemy that goes to player
-
-## Nice to Have List
 - sounds fx
   -background music
   -enemies
@@ -23,6 +21,8 @@ Put a description of what you are going to fo here....
   -taking damage
   -picking up things
   -breaking stuff
+
+## Nice to Have List
 - health bar
 - enemy drops items/potions
 - can sell items for gold
