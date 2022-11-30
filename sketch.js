@@ -25,7 +25,7 @@ function preload() {
 
 function setup() {
 
-  createCanvas(1000, 750);
+  createCanvas(windowWidth,windowHeight);
 
   tilesHigh = lines.length;
   tilesWide = lines[0].length;

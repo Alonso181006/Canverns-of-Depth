@@ -17,11 +17,19 @@ function setup(){
 }
 
 class Player{
+<<<<<<< Updated upstream
   constructor(x,y,){
+=======
+<<<<<<< HEAD
+  constructor(x,y){
+=======
+  constructor(x,y,){
+>>>>>>> 3d73afee5e42082aa6568fa3dcbe66f0b260178b
+>>>>>>> Stashed changes
     this.x = x;
     this.y = y;
-    this.dx = 1;
-    this.dy = 1;
+    this.dx = 1.3;
+    this.dy = 1.3;
   }
   display(){
     fill("red");
