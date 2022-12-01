@@ -24,9 +24,12 @@ function preload() {
 }
 
 function setup() {
+  let cnv = createCanvas(1024, 576);
+  let x = (windowWidth - width) / 2;
+  let y = (windowHeight - height) / 2;
+  cnv.position(x, y);
 
-  createCanvas(windowWidth,windowHeight);
-
+  noSmooth();
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
 
@@ -43,6 +46,7 @@ function setup() {
     }
   }
 }
+
 
 
 function draw() {
