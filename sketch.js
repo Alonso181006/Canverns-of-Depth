@@ -30,6 +30,7 @@ function setup() {
   cnv.position(x, y);
 
   noSmooth();
+  
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
 
