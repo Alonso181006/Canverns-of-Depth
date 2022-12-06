@@ -9,7 +9,7 @@ let lines;
 let tiles;
 let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
-let shell, block;
+let sTile, sDifTile, sCrack, sBrownSpot;
 
 
 function preload() {
@@ -18,8 +18,10 @@ function preload() {
   lines = loadStrings(loadingLevel);
 
   //load images for tiles
-  shell = loadImage("gameSprites/floorTileSprites/tile000.png");
-  block = loadImage("gameSprites/floorTileSprites/tile001.png");
+  sTile = loadImage("gameSprites/floorTileSprites/tile000.png");
+  sDifTile= loadImage("gameSprites/floorTileSprites/tile001.png");
+  sCrack = loadImage("gameSprites/floorTileSprites/tile002.png");
+  sBrownSpot = loadImage("gameSprites/floorTileSprites/tile004.png");
   //load background
 }
 
@@ -67,12 +69,17 @@ function display() {
 
 function showTile(location, x, y) {
   if (location === ".") {
-    image(block, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(sTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  else if (location === "/") {
-    image(shell, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  else if (location === ",") {
+    image(sDifTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-
+  else if (location === "#") {
+    image(sCrack, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "*") {
+    image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
 }
 
 function createEmpty2dArray(cols, rows) {
