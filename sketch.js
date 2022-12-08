@@ -58,7 +58,7 @@ function draw() {
 
 function display() {
   //display background
-  background(220);
+  background(0);
   //check tiles
   for (let y = 0; y < tilesHigh; y++) {
     for (let x = 0; x < tilesWide; x++) {
