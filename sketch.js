@@ -9,6 +9,7 @@ let lines;
 let tiles;
 let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
+let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
 
 
@@ -18,6 +19,7 @@ function preload() {
   lines = loadStrings(loadingLevel);
 
   //load images for tiles
+  bg = loadImage("gameSprites/blackBg.jpg");
   sTile = loadImage("gameSprites/floorTileSprites/tile000.png");
   sDifTile= loadImage("gameSprites/floorTileSprites/tile001.png");
   sCrack = loadImage("gameSprites/floorTileSprites/tile002.png");
@@ -58,7 +60,7 @@ function draw() {
 
 function display() {
   //display background
-  background(0);
+  image(bg, 0, 0, width, height);
   //check tiles
   for (let y = 0; y < tilesHigh; y++) {
     for (let x = 0; x < tilesWide; x++) {
