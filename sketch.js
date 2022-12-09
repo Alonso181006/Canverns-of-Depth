@@ -60,7 +60,7 @@ function draw() {
 
 function display() {
   //display background
-  image(bg, 0, 0, windowWidth, windowHeight);
+  image(bg, 0, 0, width, height);
   //check tiles
   for (let y = 0; y < tilesHigh; y++) {
     for (let x = 0; x < tilesWide; x++) {
