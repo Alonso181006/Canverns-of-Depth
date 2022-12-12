@@ -42,51 +42,20 @@ function setup(){
 
   player = new Player(playerX, playerY);
   enemy = new Enemy(cellWidth *2,cellHeight * 2);
+  start = player.move();
+  end = [Math.round(enemy.x/cellWidth), Math.round(enemy.y/cellHeight)];
+  start.obstacle = false;
+  end.obstacle = false;
 
-
+  // openSet starts with beginning only
+  openSet.push(start);
+  console.log(start);
+  console.log(end);
 }
 
-class Player{
-  constructor(x,y){
-    this.x = x;
-    this.y = y;
-    this.dx = 1;
-    this.dy = 1;
-  }
-  display(){
-    fill("red");
-    rect(this.x , this.y, cellWidth, cellHeight);
-  }
-  move(){
-    if(keyIsDown(87) ){ //w
-      this.y -= this.dy;
-    }
-    if(keyIsDown(83) ){ //s
-      this.y += this.dy;
-    }
-    if(keyIsDown(65) ){ //a
-      this.x -= this.dx;
-    }
-    if(keyIsDown(68) ){ //w
-      this.x += this.dx;
-    }
-    return [Math.round(this.x/cellWidth), Math.round(this.y/cellHeight)];
-  }
-}
 
-class Enemy{
-  constructor(x,y){
-    this.x = x;
-    this.y = y;
-  }
-  display(){
-    fill("green");
-    rect(this.x, this.y, cellWidth, cellHeight);
-  }
-}
-
-class Cell{
-  constructor(i,j, obstacle){
+class Cell {
+  constructor(i, j){
     // Location
     this.i = i;
     this.j = j;
@@ -103,8 +72,12 @@ class Cell{
     this.previous = undefined;
   
     // Am I a wall?
-    this.obstacle = obstacle;
+    this.obstacle = false;
+    if (random(1) < 0.4) {
+      this.obstacle= true;
+    }
   }
+  
   // Display me
   display() {
     if (this.obstacle) {
@@ -118,6 +91,9 @@ class Cell{
       rect(this.i * cellWidth, this.j * cellHeight, cellWidth, cellHeight);
     }
   }
+
+  
+  // Figure out who my neighbours are
   addNeighbours(grid) {
     let i = this.i;
     let j = this.j;
@@ -146,19 +122,13 @@ class Cell{
       this.neighbours.push(grid[i + 1][j + 1]);
     }
   }
-
 }
 
-function draw(){
-  background(255);
-  player.display();
-  enemy.display();
-  player.move();
-  start = player.move();
-  end = [Math.round(enemy.x/cellWidth), Math.round(enemy.y/cellHeight)];
-  start.obstacle = false;
-  end.obstacle = false;
+
+
+function draw() {
   pathfinding();
+
 }
 
 function heuristic(position0, position1) {
@@ -199,6 +169,7 @@ function pathfinding(){
 
     // Check all the neighbours
     let neighbours = current.neighbours;
+    console.log(current.neighbours);
     for (let i = 0; i < neighbours.length; i++) {
       let neighbour = neighbours[i];
 
@@ -266,6 +237,3 @@ function pathfinding(){
 
 }
 
-function keyPressed(){
-
-}
