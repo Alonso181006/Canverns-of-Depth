@@ -1,10 +1,12 @@
 //Variables
-const COLS = 5;
-const ROWS = 5;
+const COLS = 20;
+const ROWS = 20;
 let player;
 let enemy;
 let playerX = 0;
 let playerY = 0;
+let enemyX = 4;
+let enemyY = 4;
 let cellWidth, cellHeight;
 let grid = new Array(COLS);
 let start;
@@ -41,16 +43,12 @@ function setup(){
   }
 
   player = new Player(playerX, playerY);
-  enemy = new Enemy(cellWidth *2,cellHeight * 2);
-  start = player.move();
-  end = [Math.round(enemy.x/cellWidth), Math.round(enemy.y/cellHeight)];
+  enemy = new Enemy(cellWidth *enemyX,cellHeight * enemyY);
+  end = grid[ Math.round(player.x/cellWidth)][Math.round(player.y/cellHeight)];
+  start = grid[Math.round(enemy.x/cellWidth)][Math.round(enemy.y/cellHeight)];
   start.obstacle = false;
   end.obstacle = false;
 
-  // openSet starts with beginning only
-  openSet.push(start);
-  console.log(start);
-  console.log(end);
 }
 
 
@@ -72,24 +70,15 @@ class Cell {
     this.previous = undefined;
   
     // Am I a wall?
-    this.obstacle = false;
-    if (random(1) < 0.4) {
-      this.obstacle= true;
-    }
   }
   
   // Display me
   display() {
-    if (this.obstacle) {
-      fill(150,75,0);
-      noStroke();
-      rect(this.i * cellWidth, this.j * cellHeight , cellWidth, cellHeight);
-    } 
-    else {
-      fill("green");
-      noStroke();
-      rect(this.i * cellWidth, this.j * cellHeight, cellWidth, cellHeight);
-    }
+ 
+    fill("green");
+    noStroke();
+    rect(this.i * cellWidth, this.j * cellHeight, cellWidth, cellHeight);
+  
   }
 
   
@@ -127,9 +116,20 @@ class Cell {
 
 
 function draw() {
+  background("blue");
+  player.move();
+  end = grid[ Math.round(player.x/cellWidth)][Math.round(player.y/cellHeight)];
+  start = grid[Math.round(enemy.x/cellWidth)][Math.round(enemy.y/cellHeight)];
+  openSet.push(start);
   pathfinding();
+  player.display();
+  enemy.display();
+}
+
+function keyPressed(){
 
 }
+
 
 function heuristic(position0, position1) {
   let d = dist(position1.i, position1.j, position0.i, position0.j);
@@ -160,7 +160,7 @@ function pathfinding(){
 
     // Did I finish?
     if (current === end) {
-      noLoop();
+      loop();
     }
 
     // Best option moves from openSet to closedSet
@@ -169,7 +169,6 @@ function pathfinding(){
 
     // Check all the neighbours
     let neighbours = current.neighbours;
-    console.log(current.neighbours);
     for (let i = 0; i < neighbours.length; i++) {
       let neighbour = neighbours[i];
 
@@ -203,12 +202,9 @@ function pathfinding(){
   // No solution
   } 
   else {
-    noLoop();
+    loop();
     return;
   }
-
-  // Display everything
-  background("green");
 
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
