@@ -3,8 +3,8 @@ const COLS = 20;
 const ROWS = 20;
 let player;
 let enemy;
-let playerX = 0;
-let playerY = 0;
+let playerX = 4;
+let playerY = 4;
 let enemyX = 4;
 let enemyY = 4;
 let cellWidth, cellHeight;
@@ -42,10 +42,10 @@ function setup(){
     }
   }
 
-  player = new Player(playerX, playerY);
+  player = new Player(playerX * cellWidth, playerY * cellHeight);
   enemy = new Enemy(cellWidth *enemyX,cellHeight * enemyY);
-  end = grid[ Math.round(player.x/cellWidth)][Math.round(player.y/cellHeight)];
-  start = grid[Math.round(enemy.x/cellWidth)][Math.round(enemy.y/cellHeight)];
+  start = grid[ Math.round(player.x/cellWidth)][Math.round(player.y/cellHeight)];
+  end = grid[Math.round(enemy.x/cellWidth)][Math.round(enemy.y/cellHeight)];
   start.obstacle = false;
   end.obstacle = false;
 
@@ -118,17 +118,14 @@ class Cell {
 function draw() {
   background("blue");
   player.move();
-  end = grid[ Math.round(player.x/cellWidth)][Math.round(player.y/cellHeight)];
-  start = grid[Math.round(enemy.x/cellWidth)][Math.round(enemy.y/cellHeight)];
+  start = grid[ Math.round(player.x/cellWidth)][Math.round(player.y/cellHeight)];
+  end = grid[Math.round(enemy.x/cellWidth)][Math.round(enemy.y/cellHeight)];
   openSet.push(start);
   pathfinding();
   player.display();
   enemy.display();
 }
 
-function keyPressed(){
-
-}
 
 
 function heuristic(position0, position1) {
@@ -192,7 +189,7 @@ function pathfinding(){
 
         // Yes, it's a better path
         if (newPath) {
-          neighbour.h = heuristic(neighbour, end);
+          neighbour.h = heuristic(neighbour, start);
           neighbour.f = neighbour.g + neighbour.h;
           neighbour.previous = current;
         }
