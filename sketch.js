@@ -11,7 +11,7 @@ let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
 let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
-
+let tR, tL, tM;
 
 function preload() {
   //load positions for level
@@ -24,6 +24,11 @@ function preload() {
   sDifTile= loadImage("gameSprites/floorTileSprites/tile001.png");
   sCrack = loadImage("gameSprites/floorTileSprites/tile002.png");
   sBrownSpot = loadImage("gameSprites/floorTileSprites/tile004.png");
+  //load walls
+  tR = loadImage("topRight.png");
+  tL = loadImage("topLeft.png");
+  tM = loadImage("topMiddle.png");
+
   //load background
 }
 
@@ -70,6 +75,7 @@ function display() {
 }
 
 function showTile(location, x, y) {
+  //tiles
   if (location === ".") {
     image(sTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
@@ -81,6 +87,11 @@ function showTile(location, x, y) {
   }
   else if (location === "*") {
     image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  // walls
+  else if (location === "-") {
+    image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
   }
 }
 
