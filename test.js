@@ -19,7 +19,11 @@ let closedSet = [];
 
 
 function setup(){
-  createCanvas(windowWidth, windowHeight);
+
+  let cnv = createCanvas(1024, 576);
+  let x = (windowWidth - width) / 2;
+  let y = (windowHeight - height) / 2;
+  cnv.position(x, y);
   // Grid cell size
   cellWidth = width/COLS;
   cellHeight = height/ROWS;
@@ -116,11 +120,10 @@ class Cell {
 
 
 function draw() {
-  background("blue");
+  player.update();
+  enemy.update();
   player.move();
-  start = grid[ Math.round(player.x/cellWidth)][Math.round(player.y/cellHeight)];
-  end = grid[Math.round(enemy.x/cellWidth)][Math.round(enemy.y/cellHeight)];
-  openSet.push(start);
+  enemy.move();
   pathfinding();
   player.display();
   enemy.display();
@@ -189,7 +192,7 @@ function pathfinding(){
 
         // Yes, it's a better path
         if (newPath) {
-          neighbour.h = heuristic(neighbour, start);
+          neighbour.h = heuristic(neighbour, end);
           neighbour.f = neighbour.g + neighbour.h;
           neighbour.previous = current;
         }
@@ -199,10 +202,11 @@ function pathfinding(){
   // No solution
   } 
   else {
-    loop();
+    noLoop();
     return;
   }
 
+  background("white");
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
       grid[i][j].display();
