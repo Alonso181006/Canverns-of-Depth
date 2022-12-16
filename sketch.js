@@ -11,7 +11,7 @@ let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
 let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
-let tR, tL, tM;
+let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 
 function preload() {
   //load positions for level
@@ -25,9 +25,18 @@ function preload() {
   sCrack = loadImage("gameSprites/floorTileSprites/tile002.png");
   sBrownSpot = loadImage("gameSprites/floorTileSprites/tile004.png");
   //load walls
-  tR = loadImage("topRight.png");
-  tL = loadImage("topLeft.png");
-  tM = loadImage("topMiddle.png");
+  
+  tR = loadImage("gameSprites/wallSprites/topRight.png");
+  tL = loadImage("gameSprites/wallSprites/topLeft.png");
+  tM = loadImage("gameSprites/wallSprites/topMiddle.png");
+  bR = loadImage("gameSprites/wallSprites/bottomRight.png");
+  bL = loadImage("gameSprites/wallSprites/bottomLeft.png");
+  bM = loadImage("gameSprites/wallSprites/bottomMiddle.png");
+  wR = loadImage("gameSprites/wallSprites/wallRight.png");
+  wL = loadImage("gameSprites/wallSprites/wallLeft.png");
+  wM = loadImage("gameSprites/wallSprites/wallMiddle.png");
+  sR = loadImage("gameSprites/wallSprites/right.png");
+  sL = loadImage("gameSprites/wallSprites/left.png");
 
   //load background
 }
@@ -82,15 +91,63 @@ function showTile(location, x, y) {
   else if (location === ",") {
     image(sDifTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  else if (location === "#") {
+  else if (location === "+") {
     image(sCrack, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "*") {
     image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
+
   // walls
-  else if (location === "-") {
-    image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+
+  // top of walls
+  else if (location === "R") {
+    image(tR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "L") {
+    image(tL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "M") {
+    image(tM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+
+  // bottom of walls
+  else if (location === "l") {
+    image(bL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "r") {
+    image(bR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "m") {
+    image(bM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  // brick part
+  else if (location === "[") {
+    image(wR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  
+  else if (location === "]") {
+    image(wL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "#") {
+    image(wM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  // sides
+  }
+  else if (location === ")") {
+    image(sR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "(") {
+    image(sL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
   }
 }
