@@ -78,12 +78,20 @@ class Cell {
   
   // Display me
   display() {
- 
     fill("green");
     noStroke();
     rect(this.i * cellWidth, this.j * cellHeight, cellWidth, cellHeight);
-  
   }
+  // update(start, end){
+  //   if(grid[this.i][this.j] !== start || grid[this.i][this.j] !== end){
+       
+  //   }
+  //   else{
+
+  //   }
+
+
+  // }
 
   
   // Figure out who my neighbours are
