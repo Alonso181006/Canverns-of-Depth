@@ -25,9 +25,9 @@ function preload() {
   sCrack = loadImage("gameSprites/floorTileSprites/tile002.png");
   sBrownSpot = loadImage("gameSprites/floorTileSprites/tile004.png");
   //load walls
-  tR = loadImage("topRight.png");
-  tL = loadImage("topLeft.png");
-  tM = loadImage("topMiddle.png");
+  // tR = loadImage("topRight.png");
+  // tL = loadImage("topLeft.png");
+  // tM = loadImage("topMiddle.png");
 
   //load background
 }
@@ -89,10 +89,10 @@ function showTile(location, x, y) {
     image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   // walls
-  else if (location === "-") {
-    image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  // else if (location === "-") {
+  //   image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
-  }
+  // }
 }
 
 function createEmpty2dArray(cols, rows) {
