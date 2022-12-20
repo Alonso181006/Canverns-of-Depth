@@ -12,10 +12,10 @@ let tileWidth, tileHeight;
 let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
 let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
-
+let dTR, dTL, dTM, dR, dL, dM;
 function preload() {
   //load positions for level
-  loadingLevel = "0.text";
+  loadingLevel = "2.text";
   lines = loadStrings(loadingLevel);
 
   //load images for tiles
@@ -39,7 +39,15 @@ function preload() {
   sL = loadImage("gameSprites/wallSprites/left.png");
 
 
-  //load background
+  //load doors
+  dTR = loadImage("gameSprites/wallSprites/doors/doorTR.png");
+  dTL = loadImage("gameSprites/wallSprites/doors/doorTL.png");
+  dTM = loadImage("gameSprites/wallSprites/doors/doorTM.png");
+  dR = loadImage("gameSprites/wallSprites/doors/doorR.png");
+  dL = loadImage("gameSprites/wallSprites/doors/doorL.png");
+  dM = loadImage("gameSprites/wallSprites/doors/doorM.png");
+
+
 }
 
 function setup() {
@@ -133,7 +141,6 @@ function showTile(location, x, y) {
     image(wR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
   }
-  
   else if (location === "[") {
     image(wL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
@@ -149,6 +156,31 @@ function showTile(location, x, y) {
   }
   else if (location === "(") {
     image(sL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  //doors
+  else if (location === "t") {
+    image(dTR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "w") {
+    image(dTL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "e") {
+    image(dTM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "f") {
+    image(dR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "s") {
+    image(dL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  
+  }
+  else if (location === "d") {
+    image(dM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
   }
 }
