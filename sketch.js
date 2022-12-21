@@ -13,6 +13,8 @@ let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
 let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 let dTR, dTL, dTM, dR, dL, dM;
+let playerImg, playerX, playerY;
+
 function preload() {
   //load positions for level
   loadingLevel = "2.text";
@@ -47,7 +49,8 @@ function preload() {
   dL = loadImage("gameSprites/wallSprites/doors/doorL.png");
   dM = loadImage("gameSprites/wallSprites/doors/doorM.png");
 
-
+  //player
+  playerImg = loadImage("gameSprites/Crab Enemy Camacebra Games/Idle/Crab1.png");
 }
 
 function setup() {
