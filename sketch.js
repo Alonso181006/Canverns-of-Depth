@@ -13,7 +13,7 @@ let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
 let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 let dTR, dTL, dTM, dR, dL, dM;
-let playerImg, playerX, playerY;
+let playerImg, playerY = 9, playerX = 16;
 
 function preload() {
   //load positions for level
@@ -76,6 +76,7 @@ function setup() {
       tiles[y][x] = tileType;
     }
   }
+  tiles[playerY][playerX] = 9;
 }
 
 
@@ -186,8 +187,9 @@ function showTile(location, x, y) {
     image(dM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
   }
-  else if (location === "@"){
-    image
+  else if (location === 9){
+    image(sTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(playerImg, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
 }
 
@@ -200,4 +202,58 @@ function createEmpty2dArray(cols, rows) {
     }
   }
   return randomGrid;
+}
+
+function keyPressed() {
+  if (keyCode === RIGHT_ARROW) {
+    if (tiles[playerY][playerX+1] === "." || "d") {
+      //reset old location to white
+      tiles[playerY][playerX] = ".";
+      
+      //move
+      playerX++;
+
+      //set new player location
+      tiles[playerY][playerX] = 9;
+    }
+  }
+
+  if (keyCode === LEFT_ARROW) {
+    if (tiles[playerY][playerX-1] === "." || "d") {
+      //reset old location to white
+      tiles[playerY][playerX] = ".";
+      
+      //move
+      playerX--;
+
+      //set new player location
+      tiles[playerY][playerX] = 9;
+    }
+  }
+
+  if (keyCode === UP_ARROW) {
+    if (tiles[playerY-1][playerX] === "." || "d") {
+      //reset old location to white
+      tiles[playerY][playerX] = ".";
+      
+      //move
+      playerY--;
+
+      //set new player location
+      tiles[playerY][playerX] = 9;
+    }
+  }
+
+  if (keyCode === DOWN_ARROW) {
+    if (tiles[playerY+1][playerX] === "." || "d") {
+      //reset old location to white
+      tiles[playerY][playerX] = ".";
+      
+      //move
+      playerY++;
+
+      //set new player location
+      tiles[playerY][playerX] = 9;
+    }
+  }
 }
