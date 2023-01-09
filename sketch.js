@@ -204,56 +204,56 @@ function createEmpty2dArray(cols, rows) {
   return randomGrid;
 }
 
-function keyPressed() {
-  if (keyCode === RIGHT_ARROW) {
-    if (tiles[playerY][playerX+1] === "." || "d") {
-      //reset old location to white
-      tiles[playerY][playerX] = ".";
+// function keyPressed() {
+//   if (keyCode === RIGHT_ARROW) {
+//     if (tiles[playerY][playerX+1] === "." || "d") {
+//       //reset old location to white
+//       tiles[playerY][playerX] = ".";
       
-      //move
-      playerX++;
+//       //move
+//       playerX++;
 
-      //set new player location
-      tiles[playerY][playerX] = 9;
-    }
-  }
+//       //set new player location
+//       tiles[playerY][playerX] = 9;
+//     }
+//   }
 
-  if (keyCode === LEFT_ARROW) {
-    if (tiles[playerY][playerX-1] === "." || "d") {
-      //reset old location to white
-      tiles[playerY][playerX] = ".";
+//   if (keyCode === LEFT_ARROW) {
+//     if (tiles[playerY][playerX-1] === "." || "d") {
+//       //reset old location to white
+//       tiles[playerY][playerX] = ".";
       
-      //move
-      playerX--;
+//       //move
+//       playerX--;
 
-      //set new player location
-      tiles[playerY][playerX] = 9;
-    }
-  }
+//       //set new player location
+//       tiles[playerY][playerX] = 9;
+//     }
+//   }
 
-  if (keyCode === UP_ARROW) {
-    if (tiles[playerY-1][playerX] === "." || "d") {
-      //reset old location to white
-      tiles[playerY][playerX] = ".";
+//   if (keyCode === UP_ARROW) {
+//     if (tiles[playerY-1][playerX] === "." || "d") {
+//       //reset old location to white
+//       tiles[playerY][playerX] = ".";
       
-      //move
-      playerY--;
+//       //move
+//       playerY--;
 
-      //set new player location
-      tiles[playerY][playerX] = 9;
-    }
-  }
+//       //set new player location
+//       tiles[playerY][playerX] = 9;
+//     }
+//   }
 
-  if (keyCode === DOWN_ARROW) {
-    if (tiles[playerY+1][playerX] === "." || "d") {
-      //reset old location to white
-      tiles[playerY][playerX] = ".";
+//   if (keyCode === DOWN_ARROW) {
+//     if (tiles[playerY+1][playerX] === "." || "d") {
+//       //reset old location to white
+//       tiles[playerY][playerX] = ".";
       
-      //move
-      playerY++;
+//       //move
+//       playerY++;
 
-      //set new player location
-      tiles[playerY][playerX] = 9;
-    }
-  }
-}
+//       //set new player location
+//       tiles[playerY][playerX] = 9;
+//     }
+//   }
+// }
