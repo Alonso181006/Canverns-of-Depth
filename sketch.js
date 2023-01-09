@@ -187,10 +187,9 @@ function showTile(location, x, y) {
     image(dM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
   }
-  else if (location === 9){
-    image(sTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-    image(playerImg, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
+  
+  image(playerImg, playerX, playerY, tileWidth, tileHeight);
+
 }
 
 function createEmpty2dArray(cols, rows) {
@@ -204,56 +203,24 @@ function createEmpty2dArray(cols, rows) {
   return randomGrid;
 }
 
-// function keyPressed() {
-//   if (keyCode === RIGHT_ARROW) {
-//     if (tiles[playerY][playerX+1] === "." || "d") {
-//       //reset old location to white
-//       tiles[playerY][playerX] = ".";
-      
-//       //move
-//       playerX++;
+function keyPressed() {
+  if (keyCode === RIGHT_ARROW){
+    playerX++;
+  }
+ 
 
-//       //set new player location
-//       tiles[playerY][playerX] = 9;
-//     }
-//   }
+  if (keyCode === LEFT_ARROW){
+    playerX--;
+  }
+  
 
-//   if (keyCode === LEFT_ARROW) {
-//     if (tiles[playerY][playerX-1] === "." || "d") {
-//       //reset old location to white
-//       tiles[playerY][playerX] = ".";
-      
-//       //move
-//       playerX--;
+  if (keyCode === UP_ARROW){
+    playerY--;
+  }
+  
+  
 
-//       //set new player location
-//       tiles[playerY][playerX] = 9;
-//     }
-//   }
-
-//   if (keyCode === UP_ARROW) {
-//     if (tiles[playerY-1][playerX] === "." || "d") {
-//       //reset old location to white
-//       tiles[playerY][playerX] = ".";
-      
-//       //move
-//       playerY--;
-
-//       //set new player location
-//       tiles[playerY][playerX] = 9;
-//     }
-//   }
-
-//   if (keyCode === DOWN_ARROW) {
-//     if (tiles[playerY+1][playerX] === "." || "d") {
-//       //reset old location to white
-//       tiles[playerY][playerX] = ".";
-      
-//       //move
-//       playerY++;
-
-//       //set new player location
-//       tiles[playerY][playerX] = 9;
-//     }
-//   }
-// }
+  if (keyCode === DOWN_ARROW){
+    playerY++;
+  }
+}
