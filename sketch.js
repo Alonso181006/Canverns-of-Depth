@@ -13,7 +13,7 @@ let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
 let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 let dTR, dTL, dTM, dR, dL, dM;
-let playerImg, playerY = 9, playerX = 16;
+let player, playerImg, playerY = 576/2, playerX = 1024/2;
 
 function preload() {
   //load positions for level
@@ -61,6 +61,7 @@ function setup() {
 
   noSmooth();
   
+  player = new Player(playerImg, playerX, playerY);
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
 
@@ -76,13 +77,14 @@ function setup() {
       tiles[y][x] = tileType;
     }
   }
-  tiles[playerY][playerX] = 9;
 }
 
 
 
 function draw() {
   display();
+  player.update();
+  player.draw();
 }
 
 function display() {
@@ -187,9 +189,6 @@ function showTile(location, x, y) {
     image(dM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
   }
-  
-  image(playerImg, playerX, playerY, tileWidth, tileHeight);
-
 }
 
 function createEmpty2dArray(cols, rows) {
@@ -203,24 +202,47 @@ function createEmpty2dArray(cols, rows) {
   return randomGrid;
 }
 
-function keyPressed() {
-  if (keyCode === RIGHT_ARROW){
-    playerX++;
+class Player {
+  constructor(image, x, y){
+    this.x = x;
+    this.y = y;
+    this.image = image;
+    this.speed = 10;
   }
- 
 
-  if (keyCode === LEFT_ARROW){
-    playerX--;
+  update(){
+    let mvmt = createVector(0, 0);
+    
+    if(keyIsPressed) {
+      if (key === "d"){
+        mvmt.x += 1;
+      }
+     
+    
+      if (key === "a"){
+        mvmt.x -= 1;
+      }
+      
+    
+      if (key === "w"){
+        mvmt.y -= 1;
+      }
+      
+      
+    
+      if (key === "s"){
+        mvmt.y += 1;
+      }
+    }
+      
+    mvmt.setMag(this.speed);
+
+    this.x += mvmt.x;
+    this.y += mvmt.y;
   }
-  
 
-  if (keyCode === UP_ARROW){
-    playerY--;
-  }
-  
-  
-
-  if (keyCode === DOWN_ARROW){
-    playerY++;
+  draw() {
+    image(this.image, this.x, this.y, tileWidth, tileHeight);
   }
 }
+
