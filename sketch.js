@@ -207,38 +207,33 @@ class Player {
     this.x = x;
     this.y = y;
     this.image = image;
-    this.speed = 10;
+    this.dx = 2;
+    this.dy = 2;
   }
 
   update(){
-    let mvmt = createVector(0, 0);
     
     if(keyIsPressed) {
       if (key === "d"){
-        mvmt.x += 1;
+        this.x += this.dx;
       }
      
     
       if (key === "a"){
-        mvmt.x -= 1;
+        this.x -= this.dx;
       }
       
     
       if (key === "w"){
-        mvmt.y -= 1;
+        this.y -= this.dy;
       }
       
       
     
       if (key === "s"){
-        mvmt.y += 1;
+        this.y += this.dy;
       }
     }
-      
-    mvmt.setMag(this.speed);
-
-    this.x += mvmt.x;
-    this.y += mvmt.y;
   }
 
   draw() {
