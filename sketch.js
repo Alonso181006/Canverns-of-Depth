@@ -14,10 +14,11 @@ let sTile, sDifTile, sCrack, sBrownSpot;
 let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 let dTR, dTL, dTM, dR, dL, dM;
 let player, playerImg, playerY = 576/2, playerX = 1024/2;
+let door;
 
 function preload() {
   //load positions for level
-  loadingLevel = "2.text";
+  loadingLevel = "0.text";
   lines = loadStrings(loadingLevel);
 
   //load images for tiles
@@ -62,6 +63,7 @@ function setup() {
   noSmooth();
   
   player = new Player(playerImg, playerX, playerY);
+  door = new Door(497, 510);
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
 
@@ -83,8 +85,9 @@ function setup() {
 
 function draw() {
   display();
-  player.update();
+  player.move();
   player.draw();
+  door.display();
 }
 
 function display() {
@@ -211,33 +214,36 @@ class Player {
     this.dy = 2;
   }
 
-  update(){
+  move(){
     
-    if(keyIsPressed) {
-      if (key === "d"){
-        this.x += this.dx;
-      }
-     
-    
-      if (key === "a"){
-        this.x -= this.dx;
-      }
-      
-    
-      if (key === "w"){
-        this.y -= this.dy;
-      }
-      
-      
-    
-      if (key === "s"){
-        this.y += this.dy;
-      }
+    if(keyIsDown(65) && this.x > 25){ //a
+      this.x -= this.dx;
+    }
+    if(keyIsDown(68) && this.x < 965 ){ //d
+      this.x += this.dx;
+    }
+    if(keyIsDown(87) && this.y>60){ //w
+      this.y -= this.dy;
+    }
+    if(keyIsDown(83) && this.y <490){ //s
+      this.y += this.dy;
     }
   }
 
   draw() {
     image(this.image, this.x, this.y, tileWidth, tileHeight);
   }
+}
+
+class Door {
+  constructor(x,y){
+    this.x = x;
+    this.y = y;
+  }
+  display(){
+    fill("red");
+    rect(this.x, this.y, 32);
+  }
+
 }
 
