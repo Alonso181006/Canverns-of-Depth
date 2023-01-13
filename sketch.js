@@ -87,7 +87,9 @@ function draw() {
   display();
   player.move();
   player.draw();
+  player.doors();
   door.display();
+
 }
 
 function display() {
@@ -210,26 +212,30 @@ class Player {
     this.x = x;
     this.y = y;
     this.image = image;
-    this.dx = 2;
-    this.dy = 2;
+    this.dx = 5;
+    this.dy = 5;
   }
 
   move(){
     
-    if(keyIsDown(65) && this.x > 25){ //a
+    if(kb.pressing('left') && this.x > 25){ //a
       this.x -= this.dx;
     }
-    if(keyIsDown(68) && this.x < 965 ){ //d
+    if(kb.pressing('right')&& this.x < 965 ){ //d
       this.x += this.dx;
     }
-    if(keyIsDown(87) && this.y>60){ //w
+    if(kb.pressing('up') && this.y>60){ //w
       this.y -= this.dy;
     }
-    if(keyIsDown(83) && this.y <490){ //s
+    if(kb.pressing('down') && this.y <490){ //s
       this.y += this.dy;
     }
   }
-
+  doors() {
+    if (player.overlap(door)) {
+      loadingLevel = "2.text";
+    }
+  }
   draw() {
     image(this.image, this.x, this.y, tileWidth, tileHeight);
   }
@@ -240,6 +246,7 @@ class Door {
     this.x = x;
     this.y = y;
   }
+
   display(){
     fill("red");
     rect(this.x, this.y, 32);
