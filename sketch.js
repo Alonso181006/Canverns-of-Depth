@@ -86,8 +86,7 @@ function setup() {
 function draw() {
   display();
   player.move();
-  player.draw();
-  player.doors();
+  player.display();
   door.display();
 
 }
@@ -231,12 +230,8 @@ class Player {
       this.y += this.dy;
     }
   }
-  doors() {
-    if (player.overlap(door)) {
-      loadingLevel = "2.text";
-    }
-  }
-  draw() {
+
+  display() {
     image(this.image, this.x, this.y, tileWidth, tileHeight);
   }
 }
