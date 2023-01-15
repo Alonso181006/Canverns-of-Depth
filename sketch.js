@@ -15,10 +15,11 @@ let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 let dTR, dTL, dTM, dR, dL, dM;
 let player, playerImg, playerY = 576/2, playerX = 1024/2;
 let door;
+let d;
 
 function preload() {
   //load positions for level
-  loadingLevel = "0.text";
+  loadingLevel = "2.text";
   lines = loadStrings(loadingLevel);
 
   //load images for tiles
@@ -88,7 +89,9 @@ function draw() {
   player.move();
   player.display();
   door.display();
-
+  //distance
+  d = dist(player.x, player.y, door.x, door.y);
+  roomSwap();
 }
 
 function display() {
@@ -206,7 +209,11 @@ function createEmpty2dArray(cols, rows) {
   return randomGrid;
 }
 
-class Player {
+
+  
+
+
+class Player { 
   constructor(image, x, y){
     this.x = x;
     this.y = y;
@@ -249,3 +256,8 @@ class Door {
 
 }
 
+function roomSwap() {
+  if (d < 20) {
+    loadingLevel = "2.text";
+  }
+}
