@@ -4,9 +4,9 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
-let loadingLevel;
-let lines;
-let tiles;
+let loadingLevel, loadingLevel2;
+let lines, lines2;
+let tiles, tiles2;
 let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
 let bg;
@@ -22,6 +22,9 @@ function preload() {
   //load positions for level
   loadingLevel = "1.text";
   lines = loadStrings(loadingLevel);
+
+  loadingLevel2 = "2.text";
+  lines = loadStrings(loadingLevel2);
 
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
@@ -87,20 +90,13 @@ function setup() {
 
 
 function draw() {
-  if (state = 1) {
-    loadingLevel = "1.text";
+  if (state === 1) {
     display();
   }
+  if (state === 2) {
 
-  if (state = 2) {
-    loadingLevel = "2.text";
-    lines = loadStrings(loadingLevel);
-    for (let y = 0; y < tilesHigh; y++) {
-      for (let x = 0; x < tilesWide; x++) {
-        let tileType = lines[y][x];
-        tiles[y][x] = tileType;
-      }
-    }
+    display();
+    
   }
 
   player.move();
