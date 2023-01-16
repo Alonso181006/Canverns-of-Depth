@@ -4,8 +4,11 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+
+
 let loadingLevel;
 let lines;
+let levelTwoLines;
 let tiles;
 let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
@@ -18,10 +21,14 @@ let door;
 let d;
 let state = 1;
 
+
 function preload() {
   //load positions for level
-  loadingLevel = "1.text";
-  lines = loadStrings(loadingLevel);
+  lines = loadStrings("1.text");
+  levelTwoLines = loadStrings("2.text");
+
+  loadingLevel2 = "2.text";
+  lines = loadStrings(loadingLevel2);
 
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
@@ -66,6 +73,7 @@ function setup() {
   
   player = new Player(playerImg, playerX, playerY);
   door = new Door(497, 510);
+  
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
 
@@ -75,7 +83,10 @@ function setup() {
   tiles = createEmpty2dArray(tilesWide, tilesHigh);
 
   //put values into 2d array of characters
+  putInArray();
+}
 
+function putInArray() {
   for (let y = 0; y < tilesHigh; y++) {
     for (let x = 0; x < tilesWide; x++) {
       let tileType = lines[y][x];
@@ -87,20 +98,15 @@ function setup() {
 
 
 function draw() {
-  if (state = 1) {
-    loadingLevel = "1.text";
+  if (state === 1) {
     display();
-  }
+  } 
 
-  if (state = 2) {
-    loadingLevel = "2.text";
-    lines = loadStrings(loadingLevel);
-    for (let y = 0; y < tilesHigh; y++) {
-      for (let x = 0; x < tilesWide; x++) {
-        let tileType = lines[y][x];
-        tiles[y][x] = tileType;
-      }
-    }
+  if (state === 2) {
+    lines = levelTwoLines;
+    putInArray();
+    display();
+
   }
 
   player.move();
