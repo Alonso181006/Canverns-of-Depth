@@ -16,10 +16,11 @@ let dTR, dTL, dTM, dR, dL, dM;
 let player, playerImg, playerY = 576/2, playerX = 1024/2;
 let door;
 let d;
+let state = 1;
 
 function preload() {
   //load positions for level
-  loadingLevel = "2.text";
+  loadingLevel = "1.text";
   lines = loadStrings(loadingLevel);
 
   //load images for tiles
@@ -85,13 +86,20 @@ function setup() {
 
 
 function draw() {
-  display();
+  if (state = 1) {
+    loadingLevel = "1.text";
+    display();
+  }
+  if (state = 2) {
+    loadingLevel = "2.text";
+    display();
+  }
   player.move();
   player.display();
   door.display();
   //distance
   d = dist(player.x, player.y, door.x, door.y);
-  roomSwap();
+  levelChange();
 }
 
 function display() {
@@ -256,8 +264,8 @@ class Door {
 
 }
 
-function roomSwap() {
+function levelChange() {
   if (d < 20) {
-    loadingLevel = "2.text";
+    state = 2;
   }
 }
