@@ -75,6 +75,7 @@ function setup() {
   tiles = createEmpty2dArray(tilesWide, tilesHigh);
 
   //put values into 2d array of characters
+
   for (let y = 0; y < tilesHigh; y++) {
     for (let x = 0; x < tilesWide; x++) {
       let tileType = lines[y][x];
@@ -90,10 +91,18 @@ function draw() {
     loadingLevel = "1.text";
     display();
   }
+
   if (state = 2) {
     loadingLevel = "2.text";
-    display();
+    lines = loadStrings(loadingLevel);
+    for (let y = 0; y < tilesHigh; y++) {
+      for (let x = 0; x < tilesWide; x++) {
+        let tileType = lines[y][x];
+        tiles[y][x] = tileType;
+      }
+    }
   }
+
   player.move();
   player.display();
   door.display();
