@@ -17,11 +17,11 @@ function preload(){
     "gameSprites/humanSprites/humanWalk/WBL.png",
     { frameSize: [32, 32], frames: 4 });
 
-  player_up = loadAnimation(
-    "gameSprites/humanSprites/humanWalk/WTL.png",
+  player_down = loadAnimation(
+    "gameSprites/humanSprites/humanWalk/WBL.png",
     { frameSize: [32, 32], frames: 4 });
 
-  player_down = loadAnimation(
+  player_up = loadAnimation(
     "gameSprites/humanSprites/humanWalk/WTR.png",
     { frameSize: [32, 32], frames: 4 });
   crab_idle = loadAnimation(
