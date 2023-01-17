@@ -27,6 +27,9 @@ let spears = 550;
 let shots, shot, shotImage;
 let speed = 2;
 let rotation = 0;
+let button = [];
+let t = 0;
+let b;
 
 
 function preload() {
@@ -64,6 +67,9 @@ function preload() {
   dL = loadImage("gameSprites/wallSprites/doors/doorL.png");
   dM = loadImage("gameSprites/wallSprites/doors/doorM.png");
 
+  //button
+  button = [loadImage("gameSprites/tile000.png"), loadImage("gameSprites/tile001.png")]
+
   //player
   player_right = loadAnimation(
     "gameSprites/humanSprites/humanWalk/WBR.png",
@@ -87,6 +93,8 @@ function preload() {
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab5.png"
   );
   shotImage = loadImage("gameSprites/humanSprites/humanAttack/fireball.png");
+
+  
 }
 
 function setup() {
@@ -96,6 +104,7 @@ function setup() {
   cnv.position(x, y);
 
   noSmooth();
+  b = new Button (button[t], 100, 100, 50, 50);
   crab = new Sprite(width/2, height/2, 32, 32 );
   crab.addAni("idle", crab_idle);
   crab.friction = 2;
@@ -157,6 +166,7 @@ function draw() {
     door.remove();
   }
 
+
   playerMovement();
   player.friction = 4;
   player.rotation = 0;
@@ -167,6 +177,8 @@ function draw() {
   checkCollision();
   updateHealth(player.position.x, player.position.y, health, maxHealth);
 
+  buttonStuff()
+  b.display();
 }
 
 function display() {
@@ -289,35 +301,19 @@ function createEmpty2dArray(cols, rows) {
   
 
 
-// class Player { 
-//   constructor(image, x, y){
-//     this.x = x;
-//     this.y = y;
-//     this.image = image;
-//     this.dx = 5;
-//     this.dy = 5;
-//   }
+class Button { 
+  constructor(image, x, y, width, height){
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.image = image;
+  }
 
-//   move(){
-    
-//     if(kb.pressing('left') && this.x > 25){ //a
-//       this.x -= this.dx;
-//     }
-//     if(kb.pressing('right')&& this.x < 965 ){ //d
-//       this.x += this.dx;
-//     }
-//     if(kb.pressing('up') && this.y>60){ //w
-//       this.y -= this.dy;
-//     }
-//     if(kb.pressing('down') && this.y <490){ //s
-//       this.y += this.dy;
-//     }
-//   }
-
-//   display() {
-//     image(this.image, this.x, this.y, tileWidth, tileHeight);
-//   }
-// }
+  display() {
+    image(this.image, this.x, this.y, this.width, this.height);
+  }
+}
 
 
 function levelChange() {
@@ -397,4 +393,9 @@ function keyReleased(){
       shots.add(shot);
     }
   }
+}
+
+function buttonStuff() {
+  
+  // player.overlap(b, loseHealth);
 }
