@@ -113,7 +113,7 @@ function setup() {
   cnv.position(x, y);
 
   noSmooth();
-  button = new Sprite (200, 200);
+  button = new Sprite(200, 200);
   button.addImage("down", buttonImageDown);
   button.addImage("idle", buttonImageUp );
   button.scale = 0.2;
