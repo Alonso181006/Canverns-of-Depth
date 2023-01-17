@@ -30,6 +30,7 @@ let rotation = 0;
 let button = [];
 let t = 0;
 let b;
+let buttonsPressed = 0;
 
 
 function preload() {
@@ -395,7 +396,8 @@ function keyReleased(){
   }
 }
 
-function buttonStuff() {
-  
-  // player.overlap(b, loseHealth);
+function buttonOpen() {
+  if(buttonsPressed ===3){
+    
+  }
 }
