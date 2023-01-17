@@ -8,6 +8,7 @@
 
 let lines;
 let levelTwoLines;
+let levelThreeLines;
 let tiles;
 let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
@@ -15,9 +16,10 @@ let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
 let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 let dTR, dTL, dTM, dR, dL, dM;
-let door;
+let doors, door, door2;
 let d;
 let state = 1;
+let room = "start";
 
 let player, player_right, player_left, player_up, player_down;
 let crab, crab_idle;
@@ -33,10 +35,13 @@ let b;
 let buttonsPressed = 0;
 
 
+
 function preload() {
   //load positions for level
-  lines = loadStrings("1.text");
-  levelTwoLines = loadStrings("2.text");
+  lines = loadStrings("start.text");
+  levelTwoLines = loadStrings("bottom.text");
+  levelThreeLines = loadStrings("top.text");
+
 
 
   //load images for tiles
@@ -114,12 +119,15 @@ function setup() {
   player.addAni("left", player_left);
   player.addAni("up", player_up);
   player.addAni("down", player_down);
+  doors = new Group();
   door = new Sprite(515, 525, 32, 32);
+  door2 = new Sprite(510, 45, 40, 40);
   noSmooth();
 
   crab.moveTowards(0.1,player.position.x, player.position.y, 0.001);
   shots = new Group();
   shot = new Sprite(-50, -50);
+
   shot.remove;
   
   
@@ -166,6 +174,11 @@ function draw() {
     crab.remove();
     door.remove();
   }
+  if(state ===4){
+    lines = levelThreeLines;
+    putInArray();
+    display();
+  }
 
 
   playerMovement();
@@ -178,7 +191,6 @@ function draw() {
   checkCollision();
   updateHealth(player.position.x, player.position.y, health, maxHealth);
 
-  buttonStuff()
   b.display();
 }
 
@@ -317,9 +329,7 @@ class Button {
 }
 
 
-function levelChange() {
-  state = 2;
-}
+
 
 function playerMovement(){
   if (kb.pressing("left") && player.x > 45) {
@@ -367,8 +377,26 @@ function updateHealth(x,y, health, maxHealth){
 function checkCollision(){
   player.overlap(crab, loseHealth);
   shot.overlap(crab, eliminate);
-  player.overlap(door, levelChange);
+  player.overlap(door, touchingDoor);
+  player.overlap(door2, touchingDoor2);
 }
+
+function touchingDoor(){
+  state = 2;
+}
+function touchingDoor2(){
+  state = 4;
+}
+
+function levelChange() {
+  if (state = 1) {
+    state = 4;
+  }
+  if (state === 2) {
+    state = 1;
+  }
+}
+
 
 function loseHealth(){
   health -= 10;
@@ -396,8 +424,4 @@ function keyReleased(){
   }
 }
 
-function buttonOpen() {
-  if(buttonsPressed ===3){
-    
-  }
-}
+
