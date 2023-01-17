@@ -6,7 +6,6 @@
 // - describe what you did to take this project "above and beyond"
 
 
-let loadingLevel;
 let lines;
 let levelTwoLines;
 let tiles;
@@ -16,10 +15,22 @@ let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
 let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 let dTR, dTL, dTM, dR, dL, dM;
-let player, playerImg, playerY = 576/2, playerX = 1024/2;
 let door;
 let d;
 let state = 1;
+
+let player, player_right, player_left, player_up, player_down;
+let crab, crab_idle;
+let health = 20;
+let maxHealth = 20;
+let spears = 550;
+let shots, shot, shotImage;
+let speed = 2;
+let rotation = 0;
+let button = [];
+let t = 0;
+let b;
+let buttonsPressed = 0;
 
 
 function preload() {
@@ -27,8 +38,6 @@ function preload() {
   lines = loadStrings("1.text");
   levelTwoLines = loadStrings("2.text");
 
-  loadingLevel2 = "2.text";
-  lines = loadStrings(loadingLevel2);
 
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
@@ -59,8 +68,34 @@ function preload() {
   dL = loadImage("gameSprites/wallSprites/doors/doorL.png");
   dM = loadImage("gameSprites/wallSprites/doors/doorM.png");
 
+  //button
+  button = [loadImage("gameSprites/tile000.png"), loadImage("gameSprites/tile001.png")]
+
   //player
-  playerImg = loadImage("gameSprites/Crab Enemy Camacebra Games/Idle/Crab1.png");
+  player_right = loadAnimation(
+    "gameSprites/humanSprites/humanWalk/WBR.png",
+    { frameSize: [32, 32], frames: 4 });
+  player_left = loadAnimation(
+    "gameSprites/humanSprites/humanWalk/WBL.png",
+    { frameSize: [32, 32], frames: 4 });
+
+  player_down = loadAnimation(
+    "gameSprites/humanSprites/humanWalk/WBL.png",
+    { frameSize: [32, 32], frames: 4 });
+
+  player_up = loadAnimation(
+    "gameSprites/humanSprites/humanWalk/WTR.png",
+    { frameSize: [32, 32], frames: 4 });
+  crab_idle = loadAnimation(
+    "gameSprites/Crab Enemy Camacebra Games/Idle/Crab1.png",
+    "gameSprites/Crab Enemy Camacebra Games/Idle/Crab2.png",
+    "gameSprites/Crab Enemy Camacebra Games/Idle/Crab3.png",
+    "gameSprites/Crab Enemy Camacebra Games/Idle/Crab4.png",
+    "gameSprites/Crab Enemy Camacebra Games/Idle/Crab5.png"
+  );
+  shotImage = loadImage("gameSprites/humanSprites/humanAttack/fireball.png");
+
+  
 }
 
 function setup() {
@@ -70,9 +105,23 @@ function setup() {
   cnv.position(x, y);
 
   noSmooth();
+  b = new Button (button[t], 100, 100, 50, 50);
+  crab = new Sprite(width/2, height/2, 32, 32 );
+  crab.addAni("idle", crab_idle);
+  crab.friction = 2;
+  player = new Sprite(width/2,400, 32, 32);
+  player.addAni("right", player_right);
+  player.addAni("left", player_left);
+  player.addAni("up", player_up);
+  player.addAni("down", player_down);
+  door = new Sprite(515, 525, 32, 32);
+  noSmooth();
+
+  crab.moveTowards(0.1,player.position.x, player.position.y, 0.001);
+  shots = new Group();
+  shot = new Sprite(-50, -50);
+  shot.remove;
   
-  player = new Player(playerImg, playerX, playerY);
-  door = new Door(497, 510);
   
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
@@ -84,6 +133,8 @@ function setup() {
 
   //put values into 2d array of characters
   putInArray();
+  //Alonso
+
 }
 
 function putInArray() {
@@ -106,15 +157,29 @@ function draw() {
     lines = levelTwoLines;
     putInArray();
     display();
+  
 
   }
+  if(state === 3){
+    background(0);
+    player.remove();
+    crab.remove();
+    door.remove();
+  }
 
-  player.move();
-  player.display();
-  door.display();
-  //distance
-  d = dist(player.x, player.y, door.x, door.y);
-  levelChange();
+
+  playerMovement();
+  player.friction = 4;
+  player.rotation = 0;
+  crab.friction = 4;
+  crab.moveTowards(player.position.x, player.position.y, 0.005);
+  crab.rotation = 0;
+  door.static = true;
+  checkCollision();
+  updateHealth(player.position.x, player.position.y, health, maxHealth);
+
+  buttonStuff()
+  b.display();
 }
 
 function display() {
@@ -126,6 +191,7 @@ function display() {
       showTile(tiles[y][x], x, y);
     }
   }
+
 }
 
 function showTile(location, x, y) {
@@ -236,51 +302,102 @@ function createEmpty2dArray(cols, rows) {
   
 
 
-class Player { 
-  constructor(image, x, y){
+class Button { 
+  constructor(image, x, y, width, height){
     this.x = x;
     this.y = y;
+    this.width = width;
+    this.height = height;
     this.image = image;
-    this.dx = 5;
-    this.dy = 5;
-  }
-
-  move(){
-    
-    if(kb.pressing('left') && this.x > 25){ //a
-      this.x -= this.dx;
-    }
-    if(kb.pressing('right')&& this.x < 965 ){ //d
-      this.x += this.dx;
-    }
-    if(kb.pressing('up') && this.y>60){ //w
-      this.y -= this.dy;
-    }
-    if(kb.pressing('down') && this.y <490){ //s
-      this.y += this.dy;
-    }
   }
 
   display() {
-    image(this.image, this.x, this.y, tileWidth, tileHeight);
+    image(this.image, this.x, this.y, this.width, this.height);
   }
 }
 
-class Door {
-  constructor(x,y){
-    this.x = x;
-    this.y = y;
-  }
-
-  display(){
-    fill("red");
-    rect(this.x, this.y, 32);
-  }
-
-}
 
 function levelChange() {
-  if (d < 20) {
-    state = 2;
+  state = 2;
+}
+
+function playerMovement(){
+  if (kb.pressing("left") && player.x > 45) {
+    player.ani = "left";
+    player.ani.scale = 2.5;
+    player.vel.x = -2;
+    rotation = 180;
+  }
+  else if (kb.pressing("right")&& player.x < 985) {
+    player.ani = "right";
+    player.ani.scale = 2.5;
+    player.vel.x = 2;
+    rotation = 90;
+  }
+  else if (kb.pressing("up") && player.y > 65) {
+    player.ani = "up";
+    player.ani.scale = 2.5;
+    player.vel.y = -2;
+    rotation = 0;
+  }
+  else if (kb.pressing("down") && player.y < 505) {
+    player.ani = "down";
+    player.ani.scale = 2.5;
+    player.vel.y = 2;
+    rotation = 360;
+  }
+  else {
+    player.ani.scale = 2.5;
+    player.vel.x = 0;
+    player.vel.y =0;
+  }
+}
+
+function updateHealth(x,y, health, maxHealth){
+  stroke(0);
+  strokeWeight(4);
+  noFill();
+  rect(x -10, y-15, 20, 1.5);
+  noStroke();
+  fill(255,0,0);
+  rect(x -10 ,y -15,map(health, 0, maxHealth, 0, 20), 1.5);
+  
+}
+
+function checkCollision(){
+  player.overlap(crab, loseHealth);
+  shot.overlap(crab, eliminate);
+  player.overlap(door, levelChange);
+}
+
+function loseHealth(){
+  health -= 10;
+  if(health <= 0){
+    state = 3;
+  }
+}
+function eliminate(){
+  crab.remove();
+}
+
+function keyReleased(){
+  if(spears <= 0){
+    spears = 0;
+    return;
+  }
+  else{
+    if(keyCode === 32){
+      spears -= 1;
+      shot = new Sprite(player.position.x, player.position.y);
+      shot.addImage("idle", shotImage);
+      shot.scale = 0.01;
+      shots.add(shot);
+    }
+  }
+}
+
+function buttonOpen() {
+  if(buttonsPressed ===3){
+    
   }
 }
