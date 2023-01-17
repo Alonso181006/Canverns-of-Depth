@@ -29,10 +29,11 @@ let spears = 550;
 let shots, shot, shotImage;
 let speed = 2;
 let rotation = 0;
-let button = [];
+let button;
 let t = 0;
-let b;
+let buttonImageUp, buttonImageDown;
 let buttonsPressed = 0;
+let buttonImage = "up";
 
 
 
@@ -74,7 +75,9 @@ function preload() {
   dM = loadImage("gameSprites/wallSprites/doors/doorM.png");
 
   //button
-  button = [loadImage("gameSprites/tile000.png"), loadImage("gameSprites/tile001.png")]
+  buttonImageUp = loadImage("gameSprites/tile000.png");
+  buttonImageDown= loadImage("gameSprites/tile001.png");
+
 
   //player
   player_right = loadAnimation(
@@ -110,7 +113,11 @@ function setup() {
   cnv.position(x, y);
 
   noSmooth();
-  b = new Button (button[t], 100, 100, 50, 50);
+  button = new Sprite (200, 200);
+  button.addImage("down", buttonImageDown);
+  button.addImage("idle", buttonImageUp );
+  button.scale = 0.2;
+
   crab = new Sprite(width/2, height/2, 32, 32 );
   crab.addAni("idle", crab_idle);
   crab.friction = 2;
@@ -188,10 +195,10 @@ function draw() {
   crab.moveTowards(player.position.x, player.position.y, 0.005);
   crab.rotation = 0;
   door.static = true;
+  button.static = true;
   checkCollision();
   updateHealth(player.position.x, player.position.y, health, maxHealth);
 
-  b.display();
 }
 
 function display() {
@@ -314,21 +321,6 @@ function createEmpty2dArray(cols, rows) {
   
 
 
-class Button { 
-  constructor(image, x, y, width, height){
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.image = image;
-  }
-
-  display() {
-    image(this.image, this.x, this.y, this.width, this.height);
-  }
-}
-
-
 
 
 function playerMovement(){
@@ -379,7 +371,21 @@ function checkCollision(){
   shot.overlap(crab, eliminate);
   player.overlap(door, touchingDoor);
   player.overlap(door2, touchingDoor2);
+  player.overlap(button, buttonIsPressed);
 }
+
+function buttonIsPressed(){
+  if(buttonImage !== "down"){
+    buttonsPressed ++;
+  }
+  button.image = "down";
+  buttonImage = "down";
+}
+// function buttonOpen() {
+//   if(buttonsPressed ===3){
+    
+//   }
+// }
 
 function touchingDoor(){
   state = 2;
@@ -389,7 +395,7 @@ function touchingDoor2(){
 }
 
 function levelChange() {
-  if (state = 1) {
+  if (state === 1) {
     state = 4;
   }
   if (state === 2) {
