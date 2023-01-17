@@ -43,6 +43,7 @@ function setup(){
   player.addAni("left", player_left);
   player.addAni("up", player_up);
   player.addAni("down", player_down);
+  noSmooth();
 
   crab.moveTowards(0.1,player.position.x, player.position.y, 0.001);
   shots = new Group();
