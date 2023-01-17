@@ -27,8 +27,8 @@ function preload() {
   lines = loadStrings("1.text");
   levelTwoLines = loadStrings("2.text");
 
-  loadingLevel2 = "2.text";
-  lines = loadStrings(loadingLevel2);
+  // loadingLevel2 = "2.text";
+  // lines = loadStrings(loadingLevel2);
 
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
