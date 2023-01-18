@@ -36,6 +36,7 @@ let buttonImageUp, buttonImageDown;
 let buttonsPressed = 0;
 let buttonImage = "up";
 let playerX = 100, playerY = 400;
+let crabs = 0;
 
 
 
@@ -122,9 +123,9 @@ function setup() {
   button.addImage("idle", buttonImageUp );
   button.scale = 0.2;
 
-  crab = new Sprite(width/2, height/2, 32, 32 );
-  crab.addAni("idle", crab_idle);
-  crab.friction = 2;
+  // crab = new Sprite(width/2, height/2, 32, 32 );
+  // crab.addAni("idle", crab_idle);
+  // crab.friction = 2;
   player = new Sprite(width/ 2, 400, 32, 32);
   player.addAni("right", player_right);
   player.addAni("left", player_left);
@@ -133,9 +134,11 @@ function setup() {
   doors = new Group();
   door = new Sprite(515, 525, 32, 32);
   door2 = new Sprite(510, 45, 40, 40);
+  door.visible = false;
+  door2. visible = false;
   noSmooth();
 
-  crab.moveTowards(0.1,player.position.x, player.position.y, 0.001);
+  // crab.moveTowards(player.position.x, player.position.y, 0.005);
   shots = new Group();
   shot = new Sprite(-50, -50);
 
@@ -172,12 +175,24 @@ function draw() {
     lines = levelOneLines; 
     putInArray();
     display();
+    if(crabs === 0){
+      crab = new Sprite(width/2, height/2, 32, 32 );
+      crab.addAni("idle", crab_idle);
+      crabs++;
+    }
+    crab.friction = 4;
+    crab.moveTowards(player.position.x, player.position.y, 0.005);
+    crab.rotation = 0;
   } 
 
   if (state === 2) {
     lines = levelTwoLines;
     putInArray();
     display();
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
   
 
   }
@@ -186,20 +201,22 @@ function draw() {
     player.remove();
     crab.remove();
     door.remove();
+    button.remove();
   }
   if(state === 4){
     lines = levelThreeLines;
     putInArray();
     display();
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
   }
 
 
   playerMovement();
   player.friction = 4;
   player.rotation = 0;
-  crab.friction = 4;
-  crab.moveTowards(player.position.x, player.position.y, 0.005);
-  crab.rotation = 0;
   door.static = true;
   button.static = true;
   checkCollision();
