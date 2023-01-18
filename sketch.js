@@ -7,6 +7,7 @@
 
 
 let lines;
+let levelOneLines;
 let levelTwoLines;
 let levelThreeLines;
 let tiles;
@@ -34,12 +35,14 @@ let t = 0;
 let buttonImageUp, buttonImageDown;
 let buttonsPressed = 0;
 let buttonImage = "up";
+let playerX = 100, playerY = 400;
 
 
 
 function preload() {
   //load positions for level
   lines = loadStrings("start.text");
+  levelOneLines = loadStrings("start.text");
   levelTwoLines = loadStrings("bottom.text");
   levelThreeLines = loadStrings("top.text");
 
@@ -107,6 +110,7 @@ function preload() {
 }
 
 function setup() {
+  
   let cnv = createCanvas(1024, 576);
   let x = (windowWidth - width) / 2;
   let y = (windowHeight - height) / 2;
@@ -121,7 +125,7 @@ function setup() {
   crab = new Sprite(width/2, height/2, 32, 32 );
   crab.addAni("idle", crab_idle);
   crab.friction = 2;
-  player = new Sprite(width/2,400, 32, 32);
+  player = new Sprite(width/ 2, 400, 32, 32);
   player.addAni("right", player_right);
   player.addAni("left", player_left);
   player.addAni("up", player_up);
@@ -165,6 +169,8 @@ function putInArray() {
 
 function draw() {
   if (state === 1) {
+    lines = levelOneLines; 
+    putInArray();
     display();
   } 
 
@@ -181,7 +187,7 @@ function draw() {
     crab.remove();
     door.remove();
   }
-  if(state ===4){
+  if(state === 4){
     lines = levelThreeLines;
     putInArray();
     display();
@@ -388,24 +394,30 @@ function buttonIsPressed(){
 // }
 
 function touchingDoor(){
-  state = 2;
+  // state = 2;
+  if (state === 1) {
+    state = 2;
+    player.position.y = 100;
+  }
+  if (state === 4) {
+    state = 1;
+    player.position.y = 100;
+  }
 }
 function touchingDoor2(){
-  state = 4;
-}
-
-function levelChange() {
+  // state = 4;
   if (state === 1) {
     state = 4;
+    player.position.y = 475;
   }
   if (state === 2) {
     state = 1;
+    player.position.y = 475;
   }
 }
 
-
 function loseHealth(){
-  health -= 10;
+  health -= 5;
   if(health <= 0){
     state = 3;
   }
