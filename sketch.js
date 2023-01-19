@@ -241,12 +241,12 @@ function showTile(location, x, y) {
   if (location === ".") {
     image(sTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  // else if (location === ",") {
-  //   image(sDifTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  // }
-  // else if (location === "+") {
-  //   image(sCrack, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  // }
+  else if (location === ",") {
+    image(sDifTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "+") {
+    image(sCrack, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
   // else if (location === "*") {
   //   image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   // }
