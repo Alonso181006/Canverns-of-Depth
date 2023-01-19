@@ -38,6 +38,10 @@ let buttonImage = "up";
 let playerX = 100, playerY = 400;
 let crabs = 0;
 
+let lastTimeSwitched = -100;
+let damagePerSecond = 100;
+let playerFacing = "left";
+
 
 
 function preload() {
@@ -351,25 +355,25 @@ function playerMovement(){
     player.ani = "left";
     player.ani.scale = 2.5;
     player.vel.x = -2;
-    rotation = 180;
+    playerFacing = "left";
   }
   else if (kb.pressing("right")&& player.x < 985) {
     player.ani = "right";
     player.ani.scale = 2.5;
     player.vel.x = 2;
-    rotation = 90;
+    playerFacing = "right";
   }
   else if (kb.pressing("up") && player.y > 65) {
     player.ani = "up";
     player.ani.scale = 2.5;
     player.vel.y = -2;
-    rotation = 0;
+    playerFacing = "up";
   }
   else if (kb.pressing("down") && player.y < 505) {
     player.ani = "down";
     player.ani.scale = 2.5;
     player.vel.y = 2;
-    rotation = 360;
+    playerFacing = "down";
   }
   else {
     player.ani.scale = 2.5;
@@ -390,7 +394,11 @@ function updateHealth(x,y, health, maxHealth){
 }
 
 function checkCollision(){
-  player.overlap(crab, loseHealth);
+  if(player.overlapping(crab) > lastTimeSwitched + damagePerSecond){
+    loseHealth();
+    lastTimeSwitched = player.overlapping(crab);
+  }
+
   shot.overlap(crab, eliminate);
   player.overlap(door, touchingDoor);
   player.overlap(door2, touchingDoor2);
@@ -449,14 +457,55 @@ function keyReleased(){
     return;
   }
   else{
-    if(keyCode === 32){
+    if(keyCode === 32 && playerFacing  === "left"){
+      spears -= 1;
+      shot = new Sprite(player.position.x -1, player.position.y);
+      shot.addImage("idle", shotImage);
+      shot.vel.x = shotsDirectionsX();
+      shot.vel.y = shotsDirectionsY();
+      shot.scale = 0.01;
+      shots.add(shot);
+    }
+    else if(keyCode === 32 && playerFacing  !== "left"){
       spears -= 1;
       shot = new Sprite(player.position.x, player.position.y);
       shot.addImage("idle", shotImage);
+      shot.vel.x = shotsDirectionsX();
+      shot.vel.y = shotsDirectionsY();
       shot.scale = 0.01;
       shots.add(shot);
     }
   }
 }
 
+
+function shotsDirectionsX(){
+  if(playerFacing === "left"){
+    return -2;
+  }
+  else if(playerFacing === "right"){
+    return 2;
+  }
+  else if(playerFacing === "up"){
+    return 0;
+  }
+  else if(playerFacing === "down"){
+    return 0;
+  }
+}
+
+function shotsDirectionsY(){
+  if(playerFacing === "up"){
+    return -2;
+  }
+  else if(playerFacing === "down"){
+    return 2;
+  }
+  else if(playerFacing === "left"){
+    return 0;
+  }
+  else if(playerFacing === "right"){
+    return 0;
+  }
+}
 
