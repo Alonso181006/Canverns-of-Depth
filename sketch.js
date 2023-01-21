@@ -384,7 +384,7 @@ function showTile(location, x, y) {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
   }
-  else if (location === "D" && buttonsPressed === 1) {
+  else if (location === "D" && state === 1 && buttonsPressed === 1) {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "D") {
