@@ -7,9 +7,7 @@
 
 //variables
 let lines;
-let levelOneLines;
-let levelTwoLines;
-let levelThreeLines;
+let levelOneLines, levelTwoLines, levelThreeLines, levelFourLines, levelFiveLines;
 let tiles;
 let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
@@ -17,7 +15,7 @@ let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
 let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 let dTR, dTL, dTM, dR, dL, dM;
-let doors, door, door2;
+let doors, door, door2, door3, door4;
 let d;
 let state = 1;
 let room = "start";
@@ -48,6 +46,8 @@ function preload() {
   levelOneLines = loadStrings("start.text");
   levelTwoLines = loadStrings("bottom.text");
   levelThreeLines = loadStrings("top.text");
+  levelFourLines = loadStrings("left.text");
+  levelFiveLines= loadStrings("right.text");
 
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
@@ -137,8 +137,13 @@ function setup() {
   doors = new Group();
   door = new Sprite(515, 525, 32, 32);
   door2 = new Sprite(510, 45, 40, 40);
-  door.visible = false;
-  door2. visible = false;
+  door3 = new Sprite(20, 288, 32, 32);
+  door4 = new Sprite(1005, 288, 32, 32);
+  door.visible =false;
+  door2. visible =false;
+  door3.visible =false;
+  door4.visible =false;
+  
   noSmooth();
 
   //create fireball Group and Sprite to prevent Errorw
@@ -217,6 +222,26 @@ function draw() {
     }
   }
 
+  if(state === 5){
+    lines = levelFourLines;
+    putInArray();
+    display();
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
+  }
+
+  if(state === 6){
+    lines = levelFiveLines;
+    putInArray();
+    display();
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
+  }
+
   //Player Movement
   playerMovement();
   player.friction = 4;
@@ -225,6 +250,8 @@ function draw() {
   //Immovable Objects
   door.static = true;
   door2.static = true;
+  door3.static = true;
+  door4.static = true;
   button.static = true;
 
   //Collision
@@ -406,8 +433,12 @@ function checkCollision(){
   shot.overlap(crab, eliminate);
   shot.overlap(door, eliminateShot);
   shot.overlap(door2, eliminateShot);
+  shot.overlap(door3, eliminateShot);
+  shot.overlap(door4, eliminateShot);
   player.overlap(door, touchingDoor);
   player.overlap(door2, touchingDoor2);
+  player.overlap(door3, touchingDoor3);
+  player.overlap(door4, touchingDoor4);
   player.overlap(button, buttonIsPressed);
   
 }
@@ -428,7 +459,7 @@ function buttonIsPressed(){
 
 //Top Door Teleport
 function touchingDoor(){
-  // state = 2;
+
   if (state === 1) {
     state = 2;
     player.position.y = 100;
@@ -441,7 +472,7 @@ function touchingDoor(){
 
 // Bottom Door Teleport
 function touchingDoor2(){
-  // state = 4;
+  
   if (state === 1) {
     state = 4;
     player.position.y = 475;
@@ -450,6 +481,29 @@ function touchingDoor2(){
     state = 1;
     player.position.y = 475;
   }
+}
+
+function touchingDoor3(){
+  if (state === 1) {
+    state = 5;
+    player.position.x = 950;
+  }
+  if (state === 6) {
+    state = 1;
+    player.position.x = 950;
+  }
+}
+
+function touchingDoor4(){
+  if (state === 1) {
+    state = 6;
+    player.position.x = 75;
+  }
+  if (state === 5) {
+    state = 1;
+    player.position.x = 75;
+  }
+  
 }
 
 //Damage Player
