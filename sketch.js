@@ -70,13 +70,17 @@ function preload() {
   sL = loadImage("gameSprites/wallSprites/left.png");
 
 
-  //load doors
+  //load door frame
   dTR = loadImage("gameSprites/wallSprites/doors/doorTR.png");
   dTL = loadImage("gameSprites/wallSprites/doors/doorTL.png");
   dTM = loadImage("gameSprites/wallSprites/doors/doorTM.png");
   dR = loadImage("gameSprites/wallSprites/doors/doorR.png");
   dL = loadImage("gameSprites/wallSprites/doors/doorL.png");
   dM = loadImage("gameSprites/wallSprites/doors/doorM.png");
+
+  //load doors
+  openDoor = loadImage("gameSprites/openDoor.png");
+  closedDoor = loadImage("gameSprites/closedDoor.png");
 
   //button
   buttonImageUp = loadImage("gameSprites/tile000.png");
@@ -177,6 +181,21 @@ function putInArray() {
 function draw() {
   //homeBase
   if (state === 1) {
+    lines = levelOneLines; 
+    putInArray();
+    display();
+    //create enemies and delete enemies
+    if(crabs === 0){
+      crab = new Sprite(width/2, height/2, 32, 32 );
+      crab.addAni("idle", crab_idle);
+      crabs++;
+    }
+    crab.friction = 4;
+    crab.moveTowards(player.position.x, player.position.y, 0.005);
+    crab.rotation = 0;
+  }
+
+  if (state === 1.5) {
     lines = levelOneLines; 
     putInArray();
     display();
@@ -362,8 +381,14 @@ function showTile(location, x, y) {
   
   }
   else if (location === "d") {
-    image(dM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
+  }
+  else if (location === "D" && buttonsPressed === 1) {
+    image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "D") {
+    image(closedDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
 }
 
@@ -451,11 +476,12 @@ function buttonIsPressed(){
   button.image = "down";
   buttonImage = "down";
 }
-// function buttonOpen() {
-//   if(buttonsPressed ===3){
-    
-//   }
-// }
+
+function buttonOpen() {
+  if(buttonsPressed === 1){
+    display();
+  }
+}
 
 //Top Door Teleport
 function touchingDoor(){
@@ -472,15 +498,17 @@ function touchingDoor(){
 
 // Bottom Door Teleport
 function touchingDoor2(){
+  if (buttonsPressed === 1) {
+    if (state === 1) {
+      state = 4;
+      player.position.y = 475;
+    }
+  }
+    if (state === 2) {
+      state = 1;
+      player.position.y = 475;
+    }
   
-  if (state === 1) {
-    state = 4;
-    player.position.y = 475;
-  }
-  if (state === 2) {
-    state = 1;
-    player.position.y = 475;
-  }
 }
 
 function touchingDoor3(){
