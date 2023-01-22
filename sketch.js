@@ -37,7 +37,8 @@ let crabs = 0;
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
 let playerFacing = "left";
-let demon, demonIdle
+let demon, demonIdle, demonRun, demons = 0;
+let immortal = true;
 
 
 
@@ -119,6 +120,20 @@ function preload() {
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_5.png",
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_6.png"
   );
+  demonRun = loadAnimation(
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_1.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_2.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_3.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_4.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_5.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_6.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_7.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_8.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_9.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_10.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_11.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_12.png"
+  );
   shotImage = loadImage("gameSprites/humanSprites/humanAttack/fireball.png");
 
   
@@ -146,12 +161,8 @@ function setup() {
   player.addAni("up", player_up);
   player.addAni("down", player_down);
 
-  demon = new Sprite(width/2, height/2, 32, 32 );
-  demon.addAni("idle", demonIdle);
-  demon.static = true;
-  demon.friction = 4;
-  demon.moveTowards(player.position.x, player.position.y, 0.005);
-  demon.rotation = 0;
+  
+  
   //create door hitbox 
   doors = new Group();
   door = new Sprite(515, 525, 32, 32);
@@ -234,6 +245,7 @@ function draw() {
     if(crabs === 1){
       crabs--;
     }
+
   }
 
   //end room
@@ -254,7 +266,17 @@ function draw() {
     if(crabs === 1){
       crabs--;
     }
-    
+    if (demons === 0) {
+      demon = new Sprite(width/2, height/2 - 50, 0, 0);
+      demon.addAni("idle", demonIdle);
+      demon.addAni("walk", demonRun);
+      demon.ani = "idle";
+      demons++
+    }
+    demon.friction = 0;
+    demon.moveTowards(player.position.x, player.position.y, 0.005);
+    demon.rotation = 0;
+    demonWalk();
   }
 
   if(state === 5){
@@ -481,7 +503,20 @@ function checkCollision(){
   player.overlap(door3, touchingDoor3);
   player.overlap(door4, touchingDoor4);
   player.overlap(button, buttonIsPressed);
+  // player.overlap(demon, demonCheck)
+}
+
+function demonCheck() {
   
+}
+
+function demonWalk() {
+  if (player.position.x >= demon.position.x) {
+    demon.ani = "walk";
+  }
+  else {
+    demon.any = "idle";
+  }
 }
 
 //Alonso
@@ -552,9 +587,11 @@ function touchingDoor4(){
 
 //Damage Player
 function loseHealth(){
-  health -= 5;
-  if(health <= 0){
-    state = 3;
+  if (immortal === false) {
+    health -= 5;
+    if(health <= 0){
+      state = 3;
+    }
   }
 }
 
