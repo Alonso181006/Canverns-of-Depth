@@ -37,6 +37,7 @@ let crabs = 0;
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
 let playerFacing = "left";
+let demon, demonIdle
 
 
 
@@ -102,13 +103,21 @@ function preload() {
   player_up = loadAnimation(
     "gameSprites/humanSprites/humanWalk/WTR.png",
     { frameSize: [32, 32], frames: 4 });
-  //enemy
+  //enemies
   crab_idle = loadAnimation(
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab1.png",
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab2.png",
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab3.png",
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab4.png",
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab5.png"
+  );
+  demonIdle = loadAnimation(
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_1.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_2.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_3.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_4.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_5.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_6.png"
   );
   shotImage = loadImage("gameSprites/humanSprites/humanAttack/fireball.png");
 
@@ -137,6 +146,12 @@ function setup() {
   player.addAni("up", player_up);
   player.addAni("down", player_down);
 
+  demon = new Sprite(width/2, height/2, 32, 32 );
+  demon.addAni("idle", demonIdle);
+  demon.static = true;
+  demon.friction = 4;
+  demon.moveTowards(player.position.x, player.position.y, 0.005);
+  demon.rotation = 0;
   //create door hitbox 
   doors = new Group();
   door = new Sprite(515, 525, 32, 32);
@@ -239,6 +254,7 @@ function draw() {
     if(crabs === 1){
       crabs--;
     }
+    
   }
 
   if(state === 5){
