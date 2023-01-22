@@ -1,5 +1,13 @@
+// Project Title
+// Your Name
+// Date
+//
+// Extra for Experts:
+// - describe what you did to take this project "above and beyond"
+
+//variables
 let lines;
-let levelTwoLines;
+let levelOneLines, levelTwoLines, levelThreeLines, levelFourLines, levelFiveLines;
 let tiles;
 let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
@@ -7,10 +15,10 @@ let bg;
 let sTile, sDifTile, sCrack, sBrownSpot;
 let tR, tL, tM, bR, bL, bM, wR, wL, wM, sR, sL;
 let dTR, dTL, dTM, dR, dL, dM;
-let door;
+let doors, door, door2, door3, door4;
 let d;
 let state = 1;
-
+let room = "start";
 let player, player_right, player_left, player_up, player_down;
 let crab, crab_idle;
 let health = 20;
@@ -19,18 +27,32 @@ let spears = 550;
 let shots, shot, shotImage;
 let speed = 2;
 let rotation = 0;
-let button = [];
+let button, button1, button2, button3;
 let t = 0;
+let numberOfButtons = 0;
+let groupButton;
+let buttons;
 let buttonImageUp, buttonImageDown;
 let buttonsPressed = 0;
 let buttonImage = "up";
+let playerX = 100, playerY = 400;
+let crabs = 0;
+let lastTimeSwitched = -100;
+let damagePerSecond = 100;
+let playerFacing = "left";
+let demon, demonIdle, demonRun, demons = 0;
+let immortal = true;
+
 
 
 function preload() {
   //load positions for level
-  lines = loadStrings("1.text");
-  levelTwoLines = loadStrings("2.text");
-
+  lines = loadStrings("start.text");
+  levelOneLines = loadStrings("start.text");
+  levelTwoLines = loadStrings("bottom.text");
+  levelThreeLines = loadStrings("top.text");
+  levelFourLines = loadStrings("left.text");
+  levelFiveLines= loadStrings("right.text");
 
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
@@ -38,8 +60,8 @@ function preload() {
   sDifTile= loadImage("gameSprites/floorTileSprites/tile001.png");
   sCrack = loadImage("gameSprites/floorTileSprites/tile002.png");
   sBrownSpot = loadImage("gameSprites/floorTileSprites/tile004.png");
-  //load walls
 
+  //load walls
   tR = loadImage("gameSprites/wallSprites/topRight.png");
   tL = loadImage("gameSprites/wallSprites/topLeft.png");
   tM = loadImage("gameSprites/wallSprites/topMiddle.png");
@@ -53,7 +75,7 @@ function preload() {
   sL = loadImage("gameSprites/wallSprites/left.png");
 
 
-  //load doors
+  //load door frame
   dTR = loadImage("gameSprites/wallSprites/doors/doorTR.png");
   dTL = loadImage("gameSprites/wallSprites/doors/doorTL.png");
   dTM = loadImage("gameSprites/wallSprites/doors/doorTM.png");
@@ -61,9 +83,14 @@ function preload() {
   dL = loadImage("gameSprites/wallSprites/doors/doorL.png");
   dM = loadImage("gameSprites/wallSprites/doors/doorM.png");
 
+  //load doors
+  openDoor = loadImage("gameSprites/openDoor.png");
+  closedDoor = loadImage("gameSprites/closedDoor.png");
+
   //button
   buttonImageUp = loadImage("gameSprites/tile000.png");
   buttonImageDown= loadImage("gameSprites/tile001.png");
+
 
   //player
   player_right = loadAnimation(
@@ -80,6 +107,7 @@ function preload() {
   player_up = loadAnimation(
     "gameSprites/humanSprites/humanWalk/WTR.png",
     { frameSize: [32, 32], frames: 4 });
+  //enemies
   crab_idle = loadAnimation(
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab1.png",
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab2.png",
@@ -87,54 +115,111 @@ function preload() {
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab4.png",
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab5.png"
   );
+  demonIdle = loadAnimation(
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_1.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_2.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_3.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_4.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_5.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_6.png"
+  );
+  demonRun = loadAnimation(
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_1.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_2.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_3.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_4.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_5.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_6.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_7.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_8.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_9.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_10.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_11.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_12.png"
+  );
   shotImage = loadImage("gameSprites/humanSprites/humanAttack/fireball.png");
 
   
 }
 
 function setup() {
+  //center the canvas
   let cnv = createCanvas(1024, 576);
   let x = (windowWidth - width) / 2;
   let y = (windowHeight - height) / 2;
   cnv.position(x, y);
 
   noSmooth();
-  button = new Sprite (200, 200);
-  button.addImage("down", buttonImageDown);
-  button.addImage("idle", buttonImageUp );
-  button.scale = 0.2;
+  buttons = [ { x:108, y: 295}, { x: 919, y: 292}, { x: 511, y: 444} ];
+
+  //create button
+  groupButton = new Group();
+
+  for(let i =0; i < buttons.length; i++){
+    button = new Sprite(buttons[i].x, buttons[i].y);
+    button.addImage("down", buttonImageDown);
+    button.addImage("idle", buttonImageUp );
+    button.scale = 0.2;
+    groupButton.add(button);
+    button.visible = false;
+  }
+
+  // button1 = new Sprite(buttons[0].x, buttons[0].y);
+  // button1.addImage("down", buttonImageDown);
+  // button1.addImage("idle", buttonImageUp );
+  // button1.scale = 0.2;
+  // button1.static = true;
+
+  // button2 = new Sprite(buttons[1].x, buttons[1].y);
+  // button2.addImage("down", buttonImageDown);
+  // button2.addImage("idle", buttonImageUp );
+  // button2.scale = 0.2;
+  // button2.static = true;
+
+  // button3 = new Sprite(buttons[2].x, buttons[2].y);
+  // button3.addImage("down", buttonImageDown);
+  // button3.addImage("idle", buttonImageUp );
+  // button3.scale = 0.2;
+  // button3.static = true;
 
 
-  crab = new Sprite(width/2, height/2, 32, 32 );
-  crab.addAni("idle", crab_idle);
-  crab.friction = 2;
-  player = new Sprite(width/2,400, 32, 32);
+
+  //create player && add animation
+  player = new Sprite(width/ 2, 400, 32, 32);
   player.addAni("right", player_right);
   player.addAni("left", player_left);
   player.addAni("up", player_up);
   player.addAni("down", player_down);
+
+  
+  
+  //create door hitbox 
+  doors = new Group();
   door = new Sprite(515, 525, 32, 32);
+  door2 = new Sprite(510, 45, 40, 40);
+  door3 = new Sprite(20, 288, 32, 32);
+  door4 = new Sprite(1005, 288, 32, 32);
+  door.visible =false;
+  door2.visible =false;
+  door3.visible =false;
+  door4.visible =false;
+  
   noSmooth();
 
-  crab.moveTowards(0.1,player.position.x, player.position.y, 0.001);
+  //create fireball Group and Sprite to prevent Errorw
   shots = new Group();
   shot = new Sprite(-50, -50);
   shot.remove;
-
-
   
-  
+  //Dave
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
-
   tileWidth = width / tilesWide;
   tileHeight = height / tilesHigh;
-
   tiles = createEmpty2dArray(tilesWide, tilesHigh);
 
   //put values into 2d array of characters
   putInArray();
-  //Alonso
 
 }
 
@@ -150,34 +235,144 @@ function putInArray() {
 
 
 function draw() {
+  //homeBase
   if (state === 1) {
+    lines = levelOneLines; 
+    putInArray();
     display();
-  } 
+    //create enemies and delete enemies
+    if(crabs === 0){
+      crab = new Sprite(width/2, height/2, 32, 32 );
+      crab.addAni("idle", crab_idle);
+      crabs++;
+    }
+    crab.friction = 4;
+    crab.moveTowards(player.position.x, player.position.y, 0.005);
+    crab.rotation = 0;
+    groupButton.visible = false;
+  }
 
+  if (state === 1.5) {
+    lines = levelOneLines; 
+    putInArray();
+    display();
+    //create enemies and delete enemies
+    if(crabs === 0){
+      crab = new Sprite(width/2, height/2, 32, 32 );
+      crab.addAni("idle", crab_idle);
+      crabs++;
+    }
+    crab.friction = 4;
+    crab.moveTowards(player.position.x, player.position.y, 0.005);
+    crab.rotation = 0;
+  }
+
+  //bottom room
   if (state === 2) {
+    if(numberOfButtons === 0){
+      button = new Sprite(buttons[2].x, buttons[2].y);
+      button.addImage("down", buttonImageDown);
+      button.addImage("idle", buttonImageUp );
+      button.scale = 0.2;
+      groupButton.add(button);
+      numberOfButtons ++;
+    }
+
     lines = levelTwoLines;
     putInArray();
     display();
-  
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
 
   }
+
+  //end room
   if(state === 3){
     background(0);
     player.remove();
     crab.remove();
     door.remove();
+    button.remove();
   }
 
+  //top room
+  if(state === 4){
+    lines = levelThreeLines;
+    putInArray();
+    display();
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
+    if (demons === 0) {
+      demon = new Sprite(width/2, height/2 - 50, 0, 0);
+      demon.addAni("idle", demonIdle);
+      demon.addAni("walk", demonRun);
+      demon.ani = "idle";
+      demons++;
+    }
+    demon.friction = 0;
+    demon.moveTowards(player.position.x, player.position.y, 0.005);
+    demon.rotation = 0;
+    demonWalk();
+  }
 
+  if(state === 5){
+
+    if(numberOfButtons === 1){
+      button = new Sprite(buttons[0].x, buttons[0].y);
+      button.addImage("down", buttonImageDown);
+      button.addImage("idle", buttonImageUp );
+      button.scale = 0.2;
+      groupButton.add(button);
+      numberOfButtons ++;
+    }
+    lines = levelFourLines;
+    putInArray();
+    display();
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
+  }
+
+  if(state === 6){
+    if(numberOfButtons === 2){
+      button = new Sprite(buttons[1].x, buttons[1].y);
+      button.addImage("down", buttonImageDown);
+      button.addImage("idle", buttonImageUp );
+      button.scale = 0.2;
+      groupButton.add(button);
+      numberOfButtons ++;
+    }
+    lines = levelFiveLines;
+    putInArray();
+    display();
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
+  }
+
+  //Player Movement
   playerMovement();
   player.friction = 4;
   player.rotation = 0;
-  crab.friction = 4;
-  crab.moveTowards(player.position.x, player.position.y, 0.005);
-  crab.rotation = 0;
-  button.static = true;
+
+  //Immovable Objects
   door.static = true;
+  door2.static = true;
+  door3.static = true;
+  door4.static = true;
+  groupButton.static = true;
+
+
+  //Collision
   checkCollision();
+
+  //Health Bar
   updateHealth(player.position.x, player.position.y, health, maxHealth);
 
 }
@@ -199,17 +394,17 @@ function showTile(location, x, y) {
   if (location === ".") {
     image(sTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  // else if (location === ",") {
-  //   image(sDifTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  // }
-  // else if (location === "+") {
-  //   image(sCrack, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  // }
+  else if (location === ",") {
+    image(sDifTile, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "+") {
+    image(sCrack, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
   // else if (location === "*") {
   //   image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   // }
 
-  // walls
+  // Walls
 
   // top of walls
   else if (location === "R") {
@@ -282,8 +477,14 @@ function showTile(location, x, y) {
   
   }
   else if (location === "d") {
-    image(dM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
+  }
+  else if (location === "D" && state === 1 && buttonsPressed === 3) {
+    image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "D") {
+    image(closedDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
 }
 
@@ -298,36 +499,31 @@ function createEmpty2dArray(cols, rows) {
   return randomGrid;
 }
 
-
-
-function levelChange() {
-  state = 2;
-}
-
+//Change player animation, dx, and dy for Arrow Keys
 function playerMovement(){
   if (kb.pressing("left") && player.x > 45) {
     player.ani = "left";
     player.ani.scale = 2.5;
     player.vel.x = -2;
-    rotation = 180;
+    playerFacing = "left";
   }
   else if (kb.pressing("right")&& player.x < 985) {
     player.ani = "right";
     player.ani.scale = 2.5;
     player.vel.x = 2;
-    rotation = 90;
+    playerFacing = "right";
   }
   else if (kb.pressing("up") && player.y > 65) {
     player.ani = "up";
     player.ani.scale = 2.5;
     player.vel.y = -2;
-    rotation = 0;
+    playerFacing = "up";
   }
   else if (kb.pressing("down") && player.y < 505) {
     player.ani = "down";
     player.ani.scale = 2.5;
     player.vel.y = 2;
-    rotation = 360;
+    playerFacing = "down";
   }
   else {
     player.ani.scale = 2.5;
@@ -336,6 +532,7 @@ function playerMovement(){
   }
 }
 
+//Create Health bar 
 function updateHealth(x,y, health, maxHealth){
   stroke(0);
   strokeWeight(4);
@@ -347,49 +544,203 @@ function updateHealth(x,y, health, maxHealth){
   
 }
 
+//Collision
 function checkCollision(){
-  player.overlap(crab, loseHealth);
+  if(player.overlapping(crab) > lastTimeSwitched + damagePerSecond){
+    loseHealth();
+    lastTimeSwitched = player.overlapping(crab);
+  }
+
   shot.overlap(crab, eliminate);
-  player.overlap(door, levelChange);
-  player.overlap(button, buttonIsPressed);
+  shot.overlap(door, eliminateShot);
+  shot.overlap(door2, eliminateShot);
+  shot.overlap(door3, eliminateShot);
+  shot.overlap(door4, eliminateShot);
+  player.overlap(door, touchingDoor);
+  player.overlap(door2, touchingDoor2);
+  player.overlap(door3, touchingDoor3);
+  player.overlap(door4, touchingDoor4);
+  player.overlap(groupButton, buttonIsPressed);
+  // player.overlap(demon, demonCheck)
 }
 
-function loseHealth(){
-  health -= 10;
-  if(health <= 0){
-    state = 3;
+function demonCheck() {
+  
+}
+
+function demonWalk() {
+  if (player.position.x >= demon.position.x) {
+    demon.ani = "walk";
+  }
+  else {
+    demon.any = "idle";
   }
 }
+
+//Alonso
+function buttonIsPressed(){
+  for (let i = 3; i < groupButton.length; i++){
+    if(groupButton[i].image.name !== "down"){
+      buttonsPressed ++;
+      player.overlapping(groupButton[i], buttonOverlap);
+    }
+
+    groupButton[i].image = "down";
+  }
+
+}
+function buttonOverlap(){
+  buttonsPressed ++;
+}
+
+// function buttonIsPressed2(){
+//   if(button2.image !== "down"){
+//     buttonsPressed ++;
+//   }
+//   button2.image = "down";
+// }
+
+// function buttonIsPressed3(){
+//   if(button3.image !== "down"){
+//     buttonsPressed ++;
+//   }
+//   button3.image = "down";
+// }
+
+function buttonOpen() {
+  if(buttonsPressed === 3){
+    display();
+  }
+}
+
+//Top Door Teleport
+function touchingDoor(){
+
+  if (state === 1) {
+    state = 2;
+    player.position.y = 100;
+  }
+  if (state === 4) {
+    state = 1;
+    player.position.y = 100;
+  }
+}
+
+// Bottom Door Teleport
+function touchingDoor2(){
+  if (buttonsPressed === 3) {
+    if (state === 1) {
+      state = 4;
+      player.position.y = 475;
+    }
+  }
+  if (state === 2) {
+    state = 1;
+    player.position.y = 475;
+  }
+  
+}
+
+function touchingDoor3(){
+  if (state === 1) {
+    state = 5;
+    player.position.x = 950;
+  }
+  if (state === 6) {
+    state = 1;
+    player.position.x = 950;
+  }
+}
+
+function touchingDoor4(){
+  if (state === 1) {
+    state = 6;
+    player.position.x = 75;
+  }
+  if (state === 5) {
+    state = 1;
+    player.position.x = 75;
+  }
+  
+}
+
+//Damage Player
+function loseHealth(){
+  if (immortal === false) {
+    health -= 5;
+    if(health <= 0){
+      state = 3;
+    }
+  }
+}
+
+//Remove dead enemy
 function eliminate(){
   crab.remove();
 }
-
-function buttonIsPressed(){
-  if(buttonImage !== "down"){
-    buttonsPressed ++;
-  }
-  button.image = "down";
-  buttonImage = "down";
+function eliminateShot(){
+  shot.remove();
 }
 
+//Create Projectile
 function keyReleased(){
+  //Has Projectiles
   if(spears <= 0){
     spears = 0;
     return;
   }
+  //Space is pressed create projectile based on player orientation
   else{
-    if(keyCode === 32){
+    if(keyCode === 32 && playerFacing  === "left"){
+      spears -= 1;
+      shot = new Sprite(player.position.x -1, player.position.y);
+      shot.addImage("idle", shotImage);
+      shot.vel.x = shotsDirectionsX();
+      shot.vel.y = shotsDirectionsY();
+      shot.scale = 0.01;
+      shots.add(shot);
+    }
+    else if(keyCode === 32 && playerFacing  !== "left"){
       spears -= 1;
       shot = new Sprite(player.position.x, player.position.y);
       shot.addImage("idle", shotImage);
+      shot.vel.x = shotsDirectionsX();
+      shot.vel.y = shotsDirectionsY();
       shot.scale = 0.01;
       shots.add(shot);
     }
   }
 }
 
-function buttonOpen() {
-  if(buttonsPressed ===3){
-    
+//Calculate playerX direction
+function shotsDirectionsX(){
+  if(playerFacing === "left"){
+    return -2;
+  }
+  else if(playerFacing === "right"){
+    return 2;
+  }
+  else if(playerFacing === "up"){
+    return 0;
+  }
+  else if(playerFacing === "down"){
+    return 0;
   }
 }
+
+//Calculate playerY direction
+function shotsDirectionsY(){
+  if(playerFacing === "up"){
+    return -2;
+  }
+  else if(playerFacing === "down"){
+    return 2;
+  }
+  else if(playerFacing === "left"){
+    return 0;
+  }
+  else if(playerFacing === "right"){
+    return 0;
+  }
+}
+
