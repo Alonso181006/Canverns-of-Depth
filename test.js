@@ -20,6 +20,7 @@ let d;
 let state = 1;
 let room = "start";
 let player, player_right, player_left, player_up, player_down;
+let crabGroup;
 let crab, crab_idle;
 let health = 20;
 let maxHealth = 20;
@@ -37,11 +38,13 @@ let buttonsPressed = 0;
 let buttonImage = "up";
 let playerX = 100, playerY = 400;
 let crabs = 0;
+let crabArrayX = [388, 388, 388];
+let crabArrayY = [200, 300, 400];
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
 let playerFacing = "left";
 let demon, demonIdle, demonRun, demons = 0;
-let immortal = true;
+let immortal = false;
 
 
 
@@ -151,38 +154,19 @@ function setup() {
 
   noSmooth();
   buttons = [ { x:108, y: 295}, { x: 919, y: 292}, { x: 511, y: 444} ];
-
   //create button
   groupButton = new Group();
 
   for(let i =0; i < buttons.length; i++){
     button = new Sprite(buttons[i].x, buttons[i].y);
-    button.addImage("down", buttonImageDown);
-    button.addImage("idle", buttonImageUp );
     button.scale = 0.2;
     groupButton.add(button);
     button.visible = false;
   }
 
-  // button1 = new Sprite(buttons[0].x, buttons[0].y);
-  // button1.addImage("down", buttonImageDown);
-  // button1.addImage("idle", buttonImageUp );
-  // button1.scale = 0.2;
-  // button1.static = true;
 
-  // button2 = new Sprite(buttons[1].x, buttons[1].y);
-  // button2.addImage("down", buttonImageDown);
-  // button2.addImage("idle", buttonImageUp );
-  // button2.scale = 0.2;
-  // button2.static = true;
-
-  // button3 = new Sprite(buttons[2].x, buttons[2].y);
-  // button3.addImage("down", buttonImageDown);
-  // button3.addImage("idle", buttonImageUp );
-  // button3.scale = 0.2;
-  // button3.static = true;
-
-
+  crabGroup = new Group();
+  crab = new Sprite(-100, -100);
 
   //create player && add animation
   player = new Sprite(width/ 2, 400, 32, 32);
@@ -240,15 +224,8 @@ function draw() {
     lines = levelOneLines; 
     putInArray();
     display();
-    //create enemies and delete enemies
-    if(crabs === 0){
-      crab = new Sprite(width/2, height/2, 32, 32 );
-      crab.addAni("idle", crab_idle);
-      crabs++;
-    }
-    crab.friction = 4;
-    crab.moveTowards(player.position.x, player.position.y, 0.005);
-    crab.rotation = 0;
+
+
     groupButton.visible = false;
   }
 
@@ -256,15 +233,6 @@ function draw() {
     lines = levelOneLines; 
     putInArray();
     display();
-    //create enemies and delete enemies
-    if(crabs === 0){
-      crab = new Sprite(width/2, height/2, 32, 32 );
-      crab.addAni("idle", crab_idle);
-      crabs++;
-    }
-    crab.friction = 4;
-    crab.moveTowards(player.position.x, player.position.y, 0.005);
-    crab.rotation = 0;
   }
 
   //bottom room
@@ -281,10 +249,6 @@ function draw() {
     lines = levelTwoLines;
     putInArray();
     display();
-    crab.remove();
-    if(crabs === 1){
-      crabs--;
-    }
 
   }
 
@@ -302,10 +266,7 @@ function draw() {
     lines = levelThreeLines;
     putInArray();
     display();
-    crab.remove();
-    if(crabs === 1){
-      crabs--;
-    }
+
     if (demons === 0) {
       demon = new Sprite(width/2, height/2 - 50, 0, 0);
       demon.addAni("idle", demonIdle);
@@ -329,13 +290,12 @@ function draw() {
       groupButton.add(button);
       numberOfButtons ++;
     }
+
+
     lines = levelFourLines;
     putInArray();
     display();
-    crab.remove();
-    if(crabs === 1){
-      crabs--;
-    }
+
   }
 
   if(state === 6){
@@ -350,10 +310,7 @@ function draw() {
     lines = levelFiveLines;
     putInArray();
     display();
-    crab.remove();
-    if(crabs === 1){
-      crabs--;
-    }
+
   }
 
   //Player Movement
@@ -582,30 +539,13 @@ function buttonIsPressed(){
   for (let i = 3; i < groupButton.length; i++){
     if(groupButton[i].image.name !== "down"){
       buttonsPressed ++;
-      player.overlapping(groupButton[i], buttonOverlap);
     }
-
     groupButton[i].image = "down";
   }
 
 }
-function buttonOverlap(){
-  buttonsPressed ++;
-}
 
-// function buttonIsPressed2(){
-//   if(button2.image !== "down"){
-//     buttonsPressed ++;
-//   }
-//   button2.image = "down";
-// }
 
-// function buttonIsPressed3(){
-//   if(button3.image !== "down"){
-//     buttonsPressed ++;
-//   }
-//   button3.image = "down";
-// }
 
 function buttonOpen() {
   if(buttonsPressed === 3){
