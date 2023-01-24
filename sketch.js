@@ -34,18 +34,19 @@ let buttonstate;
 let t = 0;
 let doOnce = 0;
 let buttonImageUp, buttonImageDown;
-let buttonsPressed = 0;
+let buttonsPressed = 3;
 let buttonImage = "up";
 let playerX = 100, playerY = 400;
 let crabs = 0;
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
 let playerFacing = "left";
-let demon, demonIdle, demonRun, demons = 0;
+let demon, demonIdle, demonRun, demonDamage, demons = 0;
 let immortal = false;
 let states = [2, 5,6];
 let counter;
 let resetImage;
+let song
 
 
 
@@ -57,6 +58,9 @@ function preload() {
   levelThreeLines = loadStrings("top.text");
   levelFourLines = loadStrings("left.text");
   levelFiveLines= loadStrings("right.text");
+
+  //background music
+  song = loadSound("gameSFX/seriousMusic.mp3")
 
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
@@ -141,6 +145,24 @@ function preload() {
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_11.png",
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_12.png"
   );
+
+  demonDamage = loadAnimation(
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_1.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_2.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_3.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_4.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_5.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_6.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_7.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_8.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_9.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_10.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_11.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_12.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_13.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_14.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_15.png"
+  );
   shotImage = loadImage("gameSprites/humanSprites/humanAttack/fireball.png");
 
   startImage = loadImage("gameSFX/startScreen.gif");
@@ -174,7 +196,8 @@ function setup() {
   crab.rotation = 0;
 
 
-
+  demon = new Sprite(width/2, height/2 - 50, 50, 50);
+  demon.remove();
 
 
   //create player && add animation
@@ -233,6 +256,7 @@ function draw() {
     player.visible =  false;
     if(keyCode === 32){
       state = 1;
+      song.play();
       player.visible = true;
     }
 
@@ -310,7 +334,7 @@ function draw() {
 
   //top room
   if(state === 4){
-
+    song.stop();
     lines = levelThreeLines;
     putInArray();
     display();
@@ -318,15 +342,13 @@ function draw() {
     if(crabs === 1){
       crabs--;
     }
-    if (demons === 0) {
-      demon = new Sprite(width/2, height/2 - 50, 50, 50);
-      demon.addAni("idle", demonIdle);
-      demon.addAni("walk", demonRun);
-      demon.ani = "idle";
-      demons++;
-    }
+
+    demon.addAni("idle", demonIdle);
+    demon.addAni("walk", demonRun);
+    demon.addAni("cleave", demonDamage);
+    demon.ani = "idle";
     demon.friction = 0;
-    demon.moveTowards(player.position.x, player.position.y, 0.005);
+    demon.moveTowards(player.position.x, player.position.y, 0.01);
     demon.rotation = 0;
     demonWalk();
   }
@@ -555,6 +577,7 @@ function checkCollision(){
   player.overlap(crab, loseHealth);
 
   shot.overlap(crab, isHit);
+  shot.overlap(demon, demonHit);
 
   shot.overlap(door, eliminateShot);
   shot.overlap(door2, eliminateShot);
@@ -565,7 +588,7 @@ function checkCollision(){
   player.overlap(door3, touchingDoor3);
   player.overlap(door4, touchingDoor4);
   player.overlap(button, buttonIsPressed);
-  // player.overlap(demon, demonCheck)
+  player.overlap(demon, demonCleave)
 }
 
 function isHit(){
@@ -578,22 +601,36 @@ function isHit(){
 }
 
 
-  
-
-
-function demonCheck() {
-  
+//damage to demon
+function demonHit() {
+  if (shot.overlapping(demon)) {
+    demon.remove();
+  }
 }
 
+//demon faces player when walking
 function demonWalk() {
-  if (player.position.x <= demon.position.x) {
-    demon.ani = "walk";
+  if (player.x > demon.x) {
+    demon.mirror.x = true;
   }
-  else {
-    demon.any = "idle";
+  else if (player.x <= demon.x) {
+    demon.mirror.x = false;
   }
+  demon.ani = "walk";
 }
 
+//damage to player and rotates
+function demonCleave() {
+  if (player.x > demon.x) {
+    demon.mirror.x = true;
+  }
+  else if (player.x <= demon.x) {
+    demon.mirror.x = false;
+  }
+  demon.ani = "cleave";
+
+
+}
 //Alonso
 function buttonIsPressed(){
   if(button.pressed === false ){
@@ -635,8 +672,14 @@ function touchingDoor2(){
       player.position.y = 475;
     }
   }
-    
   
+  if (state === 4) {
+    if (demons === 0) {
+      demon = new Sprite(width/2, height/2 - 50, 100, 50);
+      demons++
+    }
+  }
+    
 }
 
 function touchingDoor3(){
