@@ -6,20 +6,20 @@ Isometric Rogue-like Dungeon Crawler inspired by Moonlighter
 
 - Player movement Y
 - Player combat Y
-  - Sword 
-- Enemy attacks
+  - Sword N
+- Enemy attacks Y
 - different levels (jump from one to the other) Y
 - levels are traversal Y
 - health Y
 - death screen Y
-  - restart button
+  - restart button Y
 - enemy that goes to player Y
-- sounds fx
-  -background music
+- sounds fx Y
+  -background music Y
   -enemies Y
   -killing Y
   -taking damage Y
-  -picking up things
+  -picking up things Y
   -breaking stuff
 
 ## Nice to Have List
