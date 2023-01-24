@@ -589,10 +589,13 @@ function touchingDoor2(){
       player.position.y = 475;
     }
   }
+  if (counter === 0) {
     if (state === 2) {
       state = 1;
       player.position.y = 475;
     }
+  }
+    
   
 }
 
