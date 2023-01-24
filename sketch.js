@@ -8,7 +8,6 @@
 //variables
 let lines;
 let levelOneLines, levelTwoLines, levelThreeLines, levelFourLines, levelFiveLines;
-let startImage;
 let tiles;
 let tilesWide, tilesHigh;
 let tileWidth, tileHeight;
@@ -19,13 +18,12 @@ let dTR, dTL, dTM, dR, dL, dM;
 let doors, door, door2, door3, door4;
 let d;
 let state = 0;
-let room = "start";
 let player, player_right, player_left, player_up, player_down;
 let crab, crab_idle;
 let health = 20;
 let maxHealth = 20;
 let spears = 550;
-let shots, shot, shotImage;
+let fireballs, fireball, fireballImage;
 let speed = 2;
 let rotation = 0;
 let button;
@@ -34,18 +32,15 @@ let buttonstate;
 let t = 0;
 let doOnce = 0;
 let buttonImageUp, buttonImageDown;
-let buttonsPressed = 3;
+let buttonsPressed = 0;
 let buttonImage = "up";
-let playerX = 100, playerY = 400;
-let crabs = 0;
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
 let playerFacing = "left";
 let demon, demonIdle, demonRun, demonDamage, demons = 0;
 let immortal = false;
-let states = [2, 5,6];
 let counter;
-let resetImage;
+let startImage, resetImage;
 let song
 
 
@@ -59,7 +54,7 @@ function preload() {
   levelFourLines = loadStrings("left.text");
   levelFiveLines= loadStrings("right.text");
 
-  //background music
+  //load background music
   song = loadSound("gameSFX/seriousMusic.mp3")
 
   //load images for tiles
@@ -95,12 +90,12 @@ function preload() {
   openDoor = loadImage("gameSprites/openDoor.png");
   closedDoor = loadImage("gameSprites/closedDoor.png");
 
-  //button
+  //load button
   buttonImageUp = loadAnimation("gameSprites/tile000.png", "gameSprites/tile000.png");
   buttonImageDown= loadAnimation("gameSprites/tile000.png", "gameSprites/tile000.png");
 
 
-  //player
+  //load player
   player_right = loadAnimation(
     "gameSprites/humanSprites/humanWalk/WBR.png",
     { frameSize: [32, 32], frames: 4 });
@@ -115,7 +110,8 @@ function preload() {
   player_up = loadAnimation(
     "gameSprites/humanSprites/humanWalk/WTR.png",
     { frameSize: [32, 32], frames: 4 });
-  //enemies
+
+  //load enemies
   crab_idle = loadAnimation(
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab1.png",
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab2.png",
@@ -163,39 +159,37 @@ function preload() {
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_14.png",
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_15.png"
   );
-  shotImage = loadImage("gameSprites/humanSprites/humanAttack/fireball.png");
 
+  //fireball Images
+  fireballImage = loadImage("gameSprites/humanSprites/humanAttack/fireball.png");
+
+  //Start and Reset Screen
   startImage = loadImage("gameSFX/startScreen.gif");
-
   resetImage = loadImage("gameSFX/resetScreen.jpg");
 
   
 }
 
 function setup() {
-
-
-  //center the canvas
+  //Center the canvas
   let cnv = createCanvas(1024, 576);
   let x = (windowWidth - width) / 2;
   let y = (windowHeight - height) / 2;
   cnv.position(x, y);
-
-
   noSmooth();
 
-  //create button
+  //Create button Group()
   button = new Group();
   button.scale = 0.2;
   button.addAni("down", buttonImageDown);
   button.addAni("idle", buttonImageUp );
 
-
+  //Create crab Group()
   crab = new Group();
   crab.addAni("idle", crab_idle);
   crab.rotation = 0;
 
-
+  //Create Boss
   demon = new Sprite(width/2, height/2 - 50, 50, 50);
   demon.remove();
 
@@ -219,26 +213,24 @@ function setup() {
   door2. visible =false;
   door3.visible =false;
   door4.visible =false;
-  
   noSmooth();
 
   //create fireball Group and Sprite to prevent Errorw
-  shots = new Group();
-  shot = new Sprite(-50, -50);
-  shot.remove;
+  fireballs = new Group();
+  fireball = new Sprite(-50, -50);
+  fireball.remove;
   
-  //Dave
+  //Create 2d Array
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
   tileWidth = width / tilesWide;
   tileHeight = height / tilesHigh;
   tiles = createEmpty2dArray(tilesWide, tilesHigh);
-
-  //put values into 2d array of characters
   putInArray();
 
 }
 
+//Put values into 2d array of characters
 function putInArray() {
   for (let y = 0; y < tilesHigh; y++) {
     for (let x = 0; x < tilesWide; x++) {
@@ -251,6 +243,7 @@ function putInArray() {
 
 
 function draw() {
+  //Start Screen
   if (state === 0){
     image(startImage, 0, 0, width, height);
     player.visible =  false;
@@ -261,38 +254,24 @@ function draw() {
     }
 
   }
-  //homeBase
+  //HomeBase
   if (state === 1) {
     button.remove();
     lines = levelOneLines; 
     putInArray();
     display();
-    //create enemies and delete enemies
   }
 
-  if (state === 1.5) {
-    lines = levelOneLines; 
-    putInArray();
-    display();
-    //create enemies and delete enemies
-    if(crabs === 0){
-      crab = new Sprite(width/2, height/2, 32, 32 );
-      crab.addAni("idle", crab_idle);
-      crabs++;
-    }
-    crab.friction = 0.1;
-    crab.moveTowards(player.position.x, player.position.y, 0.008);
-    crab.rotation = 0;
-  }
 
   //bottom room
   if (state === 2) {
+    //create content 
     if (mouse.presses("right")) {
       new button.Sprite(511, 444);
       button.pressed = false;
       new crab.Sprite(width/2, height/2);
       new crab.Sprite(width/2 + 100, height/2);
-      crab.friction = 4;
+      crab.friction = 0;
       crab.moveTowards(player.position.x, player.position.y, 0.01);
       counter = 2;
       for( let i = 0; i < crab.length; i++){
@@ -300,15 +279,16 @@ function draw() {
       }
       display();
     }
-
-
     else if (counter === 0){
       display();
     }
 
+    //Constantly update Player.x and Player.y
     for( let i = 0; i < crab.length; i++){
       crab[i].moveTowards(player.position.x, player.position.y, 0.01);
     }
+
+    //Load Background
     lines = levelTwoLines;
     checkCollision();
     putInArray();
@@ -316,7 +296,7 @@ function draw() {
 
   }
 
-  //end room
+  //End room
   if(state === 3){
     background(0);
     player.visible = false;
@@ -339,9 +319,6 @@ function draw() {
     putInArray();
     display();
     crab.remove();
-    if(crabs === 1){
-      crabs--;
-    }
 
     demon.addAni("idle", demonIdle);
     demon.addAni("walk", demonRun);
@@ -353,37 +330,72 @@ function draw() {
     demonWalk();
   }
 
+  //Left Room
   if(state === 5){
+    //Create content
     if (mouse.presses("right")) {
       new button.Sprite(108, 295);
       button.pressed = false;
+      new crab.Sprite(width/2, height/2);
+      new crab.Sprite(width/2 + 100, height/2);
+      crab.friction = 0;
+      crab.moveTowards(player.position.x, player.position.y, 0.01);
+      counter = 2;
+      for( let i = 0; i < crab.length; i++){
+        crab[i].hit = false;
+      }
+      display();
     }
+    else if (counter === 0){
+      display();
+    }
+
+    //Constantly update Player.x and Player.y
+    for( let i = 0; i < crab.length; i++){
+      crab[i].moveTowards(player.position.x, player.position.y, 0.01);
+    }
+
+    //Create Background
     lines = levelFourLines;
     putInArray();
     display();
-    crab.remove();
-    if(crabs === 1){
-      crabs--;
-    }
   }
 
+  // Right Room
   if(state === 6){
+    //Create content
     if (mouse.presses("right")) {
       new button.Sprite(919, 292);
       button.pressed = false;
+      new crab.Sprite(width/2, height/2);
+      new crab.Sprite(width/2 + 100, height/2);
+      crab.friction = 0;
+      crab.moveTowards(player.position.x, player.position.y, 0.01);
+      counter = 2;
+      for( let i = 0; i < crab.length; i++){
+        crab[i].hit = false;
+      }
+      display();
     }
+
+    else if (counter === 0){
+      display();
+    }
+
+    //Constantly update Player.x and Player.y
+    for( let i = 0; i < crab.length; i++){
+      crab[i].moveTowards(player.position.x, player.position.y, 0.01);
+    }
+
+    //Create Background
     lines = levelFiveLines;
     putInArray();
     display();
-    crab.remove();
-    if(crabs === 1){
-      crabs--;
-    }
   }
 
   //Player Movement
   playerMovement();
-  player.friction = 4;
+  player.friction = 0;
   player.rotation = 0;
 
   //Immovable Objects
@@ -423,83 +435,66 @@ function showTile(location, x, y) {
   else if (location === "+") {
     image(sCrack, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  // else if (location === "*") {
-  //   image(sBrownSpot, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  // }
 
   // Walls
 
   // top of walls
   else if (location === "R") {
     image(tR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "L") {
     image(tL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "M") {
     image(tM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
 
   // bottom of walls
   else if (location === "l") {
     image(bL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "r") {
     image(bR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "m") {
     image(bM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
+
   // brick part
   else if (location === "]") {
     image(wR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "[") {
     image(wL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "#") {
     image(wM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
-  // sides
   }
+
+  // sides
   else if (location === ")") {
     image(sR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "(") {
     image(sL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
+
   //doors
   else if (location === "t") {
     image(dTR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "w") {
     image(dTL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "e") {
     image(dTM, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "f") {
     image(dR, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "s") {
     image(dL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-
   }
-  
   else if (location === "d" && state === 2 && counter  > 0) {
     image(closedDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
@@ -525,30 +520,30 @@ function createEmpty2dArray(cols, rows) {
   return randomGrid;
 }
 
-//Change player animation, dx, and dy for Arrow Keys
+//Change player animation direction with WASD
 function playerMovement(){
   if (kb.pressing("left") && player.x > 45) {
     player.ani = "left";
     player.ani.scale = 2.5;
-    player.move(4, "left", 100);
+    player.move(4, "left", 10);
     playerFacing = "left";
   }
   else if (kb.pressing("right")&& player.x < 985) {
     player.ani = "right";
     player.ani.scale = 2.5;
-    player.move(4, "right", 100);
+    player.move(4, "right", 10);
     playerFacing = "right";
   }
   else if (kb.pressing("up") && player.y > 65) {
     player.ani = "up";
     player.ani.scale = 2.5;
-    player.move(4, "up", 100);
+    player.move(4, "up", 10);
     playerFacing = "up";
   }
   else if (kb.pressing("down") && player.y < 505) {
     player.ani = "down";
     player.ani.scale = 2.5;
-    player.move(4, "down", 100);
+    player.move(4, "down", 10);
     playerFacing = "down";
   }
   else {
@@ -570,19 +565,19 @@ function updateHealth(x,y, health, maxHealth){
 
 //Collision
 function checkCollision(){
+  //Do damage per second to player 
   if(player.overlapping(crab) > lastTimeSwitched + damagePerSecond){
     loseHealth();
     lastTimeSwitched = player.overlapping(crab);
   }
+
   player.overlap(crab, loseHealth);
-
-  shot.overlap(crab, isHit);
-  shot.overlap(demon, demonHit);
-
-  shot.overlap(door, eliminateShot);
-  shot.overlap(door2, eliminateShot);
-  shot.overlap(door3, eliminateShot);
-  shot.overlap(door4, eliminateShot);
+  fireball.overlap(crab, isHit);
+  fireball.overlap(demon, demonIsHit);
+  fireball.overlap(door, eliminateFireball);
+  fireball.overlap(door2, eliminateFireball);
+  fireball.overlap(door3, eliminateFireball);
+  fireball.overlap(door4, eliminateFireball);
   player.overlap(door, touchingDoor);
   player.overlap(door2, touchingDoor2);
   player.overlap(door3, touchingDoor3);
@@ -591,9 +586,10 @@ function checkCollision(){
   player.overlap(demon, demonCleave)
 }
 
+// Checking which Sprite in the group is hit
 function isHit(){
   for (let i = 0; i< crab.length; i++){
-    if(shot.overlapping(crab[i])){
+    if(fireball.overlapping(crab[i])){
       crab[i].remove();
       counter --;
     }
@@ -602,8 +598,8 @@ function isHit(){
 
 
 //damage to demon
-function demonHit() {
-  if (shot.overlapping(demon)) {
+function demonIsHit() {
+  if (fireball.overlapping(demon)) {
     demon.remove();
   }
 }
@@ -631,7 +627,8 @@ function demonCleave() {
 
 
 }
-//Alonso
+
+//Count when Button is Pressed
 function buttonIsPressed(){
   if(button.pressed === false ){
     buttonsPressed ++;
@@ -639,6 +636,7 @@ function buttonIsPressed(){
   button.pressed = true;
 }
 
+// When three buttons pressed open boss door
 function buttonOpen() {
   if(buttonsPressed === 3){
     display();
@@ -682,6 +680,7 @@ function touchingDoor2(){
     
 }
 
+//Left Door Teleport
 function touchingDoor3(){
   if (state === 1) {
     state = 5;
@@ -693,6 +692,7 @@ function touchingDoor3(){
   }
 }
 
+//Right Door Teleport
 function touchingDoor4(){
   if (state === 1) {
     state = 6;
@@ -715,8 +715,9 @@ function loseHealth(){
   }
 }
 
-function eliminateShot(){
-  shot.remove();
+//Delete fireball
+function eliminateFireball(){
+  fireball.remove();
 }
 
 //Create Projectile
@@ -730,52 +731,33 @@ function keyReleased(){
   else{
     if(keyCode === 32 && playerFacing  === "left"){
       spears -= 1;
-      shot = new Sprite(player.position.x -1, player.position.y);
-      shot.addImage("idle", shotImage);
-      shot.vel.x = shotsDirectionsX();
-      shot.vel.y = shotsDirectionsY();
-      shots.add(shot);
+      fireball = new Sprite(player.position.x-1, player.position.y);
+      fireball.addImage("idle", fireballImage);
+
+      fireballs.add(fireball);
     }
-    else if(keyCode === 32 && playerFacing  !== "left"){
+    else if(keyCode === 32 && playerFacing  === "right"){
       spears -= 1;
-      shot = new Sprite(player.position.x +1, player.position.y +1);
-      shot.addImage("idle", shotImage);
-      shot.vel.x = shotsDirectionsX();
-      shot.vel.y = shotsDirectionsY();
-      shots.add(shot);
+      fireball = new Sprite(player.position.x +1, player.position.y );
+      fireball.addImage("idle", fireballImage);
+
+      fireballs.add(fireball);
+    }
+    else if(keyCode === 32 && playerFacing  === "up"){
+      spears -= 1;
+      fireball = new Sprite(player.position.x, player.position.y -1);
+      fireball.addImage("idle", fireballImage);
+
+      fireballs.add(fireball);
+    }
+    else if(keyCode === 32 && playerFacing  === "down"){
+      spears -= 1;
+      fireball = new Sprite(player.position.x +1, player.position.y +1);
+      fireball.addImage("idle", fireballImage);
+
+      fireballs.add(fireball);
     }
   }
 }
 
-//Calculate playerX direction
-function shotsDirectionsX(){
-  if(playerFacing === "left"){
-    return -2;
-  }
-  else if(playerFacing === "right"){
-    return 2;
-  }
-  else if(playerFacing === "up"){
-    return 0;
-  }
-  else if(playerFacing === "down"){
-    return 0;
-  }
-}
-
-//Calculate playerY direction
-function shotsDirectionsY(){
-  if(playerFacing === "up"){
-    return -2;
-  }
-  else if(playerFacing === "down"){
-    return 2;
-  }
-  else if(playerFacing === "left"){
-    return 0;
-  }
-  else if(playerFacing === "right"){
-    return 0;
-  }
-}
 

@@ -20,7 +20,7 @@ Isometric Rogue-like Dungeon Crawler inspired by Moonlighter
   -killing Y
   -taking damage Y
   -picking up things Y
-  -breaking stuff
+  -breaking stuff/Interacting with lvl(buttons) Y
 
 ## Nice to Have List
 - health bar Y
