@@ -292,7 +292,7 @@ function draw() {
       crabs--;
     }
     if (demons === 0) {
-      demon = new Sprite(width/2, height/2 - 50, 0, 0);
+      demon = new Sprite(width/2, height/2 - 50, 50, 50);
       demon.addAni("idle", demonIdle);
       demon.addAni("walk", demonRun);
       demon.ani = "idle";
