@@ -28,7 +28,10 @@ let shots, shot, shotImage;
 let speed = 2;
 let rotation = 0;
 let button;
+let buttons = [ { x: 511, y: 444}, { x:108, y: 295}, { x: 919, y: 292} ];
+let buttonstate;
 let t = 0;
+let doOnce = 0;
 let buttonImageUp, buttonImageDown;
 let buttonsPressed = 0;
 let buttonImage = "up";
@@ -38,7 +41,9 @@ let lastTimeSwitched = -100;
 let damagePerSecond = 100;
 let playerFacing = "left";
 let demon, demonIdle, demonRun, demons = 0;
-let immortal = true;
+let immortal = false;
+let states = [2, 5,6];
+let counter;
 
 
 
@@ -85,8 +90,8 @@ function preload() {
   closedDoor = loadImage("gameSprites/closedDoor.png");
 
   //button
-  buttonImageUp = loadImage("gameSprites/tile000.png");
-  buttonImageDown= loadImage("gameSprites/tile001.png");
+  buttonImageUp = loadAnimation("gameSprites/tile000.png", "gameSprites/tile000.png");
+  buttonImageDown= loadAnimation("gameSprites/tile000.png", "gameSprites/tile000.png");
 
 
   //player
@@ -149,10 +154,19 @@ function setup() {
   noSmooth();
 
   //create button
-  button = new Sprite(200, 200);
-  button.addImage("down", buttonImageDown);
-  button.addImage("idle", buttonImageUp );
+  button = new Group();
   button.scale = 0.2;
+  button.addAni("down", buttonImageDown);
+  button.addAni("idle", buttonImageUp );
+
+
+  crab = new Group();
+  crab.addAni("idle", crab_idle);
+  crab.rotation = 0;
+
+
+
+
 
   //create player && add animation
   player = new Sprite(width/ 2, 400, 32, 32);
@@ -211,14 +225,6 @@ function draw() {
     putInArray();
     display();
     //create enemies and delete enemies
-    if(crabs === 0){
-      crab = new Sprite(width/2, height/2, 32, 32 );
-      crab.addAni("idle", crab_idle);
-      crabs++;
-    }
-    crab.friction = 4;
-    crab.moveTowards(player.position.x, player.position.y, 0.005);
-    crab.rotation = 0;
   }
 
   if (state === 1.5) {
@@ -238,13 +244,30 @@ function draw() {
 
   //bottom room
   if (state === 2) {
+    if (mouse.presses('right')) {
+      new button.Sprite(511, 444);
+      button.pressed = false;
+      new crab.Sprite(width/2, height/2);
+      new crab.Sprite(width/2 + 100, height/2);
+      crab.friction = 4;
+      crab.moveTowards(player.position.x, player.position.y, 0.01);
+      crab.collide = false;
+      counter = 1;
+    }
+
+    if(counter > 1){
+
+    }
+    else if (counter === 0){
+      
+    }
+    for( let i = 0; i < crab.length; i++){
+      crab[i].moveTowards(player.position.x, player.position.y, 0.01);
+    }
     lines = levelTwoLines;
+    checkCollision();
     putInArray();
     display();
-    crab.remove();
-    if(crabs === 1){
-      crabs--;
-    }
 
   }
 
@@ -280,6 +303,10 @@ function draw() {
   }
 
   if(state === 5){
+    if (mouse.presses('right')) {
+      new button.Sprite(108, 295);
+      button.pressed = false;
+    }
     lines = levelFourLines;
     putInArray();
     display();
@@ -290,6 +317,10 @@ function draw() {
   }
 
   if(state === 6){
+    if (mouse.presses('right')) {
+      new button.Sprite(919, 292);
+      button.pressed = false;
+    }
     lines = levelFiveLines;
     putInArray();
     display();
@@ -422,7 +453,7 @@ function showTile(location, x, y) {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   
   }
-  else if (location === "D" && state === 1 && buttonsPressed === 1) {
+  else if (location === "D" && state === 1 && buttonsPressed === 3) {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "D") {
@@ -446,31 +477,29 @@ function playerMovement(){
   if (kb.pressing("left") && player.x > 45) {
     player.ani = "left";
     player.ani.scale = 2.5;
-    player.vel.x = -2;
+    player.move(10, "left", 3);
     playerFacing = "left";
   }
   else if (kb.pressing("right")&& player.x < 985) {
     player.ani = "right";
     player.ani.scale = 2.5;
-    player.vel.x = 2;
+    player.move(10, "right", 3);
     playerFacing = "right";
   }
   else if (kb.pressing("up") && player.y > 65) {
     player.ani = "up";
     player.ani.scale = 2.5;
-    player.vel.y = -2;
+    player.move(10, "up", 3);
     playerFacing = "up";
   }
   else if (kb.pressing("down") && player.y < 505) {
     player.ani = "down";
     player.ani.scale = 2.5;
-    player.vel.y = 2;
+    player.move(10, "down", 3);
     playerFacing = "down";
   }
   else {
     player.ani.scale = 2.5;
-    player.vel.x = 0;
-    player.vel.y =0;
   }
 }
 
@@ -506,6 +535,8 @@ function checkCollision(){
   // player.overlap(demon, demonCheck)
 }
 
+
+
 function demonCheck() {
   
 }
@@ -521,15 +552,14 @@ function demonWalk() {
 
 //Alonso
 function buttonIsPressed(){
-  if(buttonImage !== "down"){
+  if(button.pressed === false ){
     buttonsPressed ++;
   }
-  button.image = "down";
-  buttonImage = "down";
+  button.pressed = true;
 }
 
 function buttonOpen() {
-  if(buttonsPressed === 1){
+  if(buttonsPressed === 3){
     display();
   }
 }
@@ -598,6 +628,7 @@ function loseHealth(){
 //Remove dead enemy
 function eliminate(){
   crab.remove();
+  counter --;
 }
 function eliminateShot(){
   shot.remove();
@@ -627,7 +658,6 @@ function keyReleased(){
       shot.addImage("idle", shotImage);
       shot.vel.x = shotsDirectionsX();
       shot.vel.y = shotsDirectionsY();
-      shot.scale = 0.01;
       shots.add(shot);
     }
   }

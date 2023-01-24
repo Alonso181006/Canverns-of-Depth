@@ -20,7 +20,6 @@ let d;
 let state = 1;
 let room = "start";
 let player, player_right, player_left, player_up, player_down;
-let crabGroup;
 let crab, crab_idle;
 let health = 20;
 let maxHealth = 20;
@@ -28,23 +27,22 @@ let spears = 550;
 let shots, shot, shotImage;
 let speed = 2;
 let rotation = 0;
-let button, button1, button2, button3;
+let button;
+let buttons = [ { x: 511, y: 444}, { x:108, y: 295}, { x: 919, y: 292} ];
+let buttonstate;
 let t = 0;
-let numberOfButtons = 0;
-let groupButton;
-let buttons;
+let doOnce = 0;
 let buttonImageUp, buttonImageDown;
 let buttonsPressed = 0;
 let buttonImage = "up";
 let playerX = 100, playerY = 400;
 let crabs = 0;
-let crabArrayX = [388, 388, 388];
-let crabArrayY = [200, 300, 400];
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
 let playerFacing = "left";
 let demon, demonIdle, demonRun, demons = 0;
 let immortal = false;
+let states = [2, 5,6];
 
 
 
@@ -91,8 +89,8 @@ function preload() {
   closedDoor = loadImage("gameSprites/closedDoor.png");
 
   //button
-  buttonImageUp = loadImage("gameSprites/tile000.png");
-  buttonImageDown= loadImage("gameSprites/tile001.png");
+  buttonImageUp = loadAnimation("gameSprites/tile000.png", "gameSprites/tile000.png");
+  buttonImageDown= loadAnimation("gameSprites/tile000.png", "gameSprites/tile000.png");
 
 
   //player
@@ -153,20 +151,21 @@ function setup() {
   cnv.position(x, y);
 
   noSmooth();
-  buttons = [ { x:108, y: 295}, { x: 919, y: 292}, { x: 511, y: 444} ];
+
   //create button
-  groupButton = new Group();
-
-  for(let i =0; i < buttons.length; i++){
-    button = new Sprite(buttons[i].x, buttons[i].y);
-    button.scale = 0.2;
-    groupButton.add(button);
-    button.visible = false;
-  }
+  button = new Group();
+  button.scale = 0.2;
+  button.addAni("down", buttonImageDown);
+  button.addAni("idle", buttonImageUp );
 
 
-  crabGroup = new Group();
-  crab = new Sprite(-100, -100);
+  crab = new Group();
+  crab.addAni("idle", crab_idle);
+  crab.rotation = 0;
+
+
+
+
 
   //create player && add animation
   player = new Sprite(width/ 2, 400, 32, 32);
@@ -184,7 +183,7 @@ function setup() {
   door3 = new Sprite(20, 288, 32, 32);
   door4 = new Sprite(1005, 288, 32, 32);
   door.visible =false;
-  door2.visible =false;
+  door2. visible =false;
   door3.visible =false;
   door4.visible =false;
   
@@ -224,29 +223,39 @@ function draw() {
     lines = levelOneLines; 
     putInArray();
     display();
-
-
-    groupButton.visible = false;
+    //create enemies and delete enemies
   }
 
   if (state === 1.5) {
     lines = levelOneLines; 
     putInArray();
     display();
+    //create enemies and delete enemies
+    if(crabs === 0){
+      crab = new Sprite(width/2, height/2, 32, 32 );
+      crab.addAni("idle", crab_idle);
+      crabs++;
+    }
+    crab.friction = 4;
+    crab.moveTowards(player.position.x, player.position.y, 0.005);
+    crab.rotation = 0;
   }
 
   //bottom room
   if (state === 2) {
-    if(numberOfButtons === 0){
-      button = new Sprite(buttons[2].x, buttons[2].y);
-      button.addImage("down", buttonImageDown);
-      button.addImage("idle", buttonImageUp );
-      button.scale = 0.2;
-      groupButton.add(button);
-      numberOfButtons ++;
+    if (mouse.presses('right')) {
+      new button.Sprite(511, 444);
+      button.pressed = false;
+      new crab.Sprite(width/2, height/2);
+      new crab.Sprite(width/2 + 100, height/2);
+      crab.friction = 4;
+      crab.moveTowards(player.position.x, player.position.y, 0.01);
     }
-
+    for( let i = 0; i < crab.length; i++){
+      crab[i].moveTowards(player.position.x, player.position.y, 0.01);
+    }
     lines = levelTwoLines;
+    checkCollision();
     putInArray();
     display();
 
@@ -266,13 +275,16 @@ function draw() {
     lines = levelThreeLines;
     putInArray();
     display();
-
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
     if (demons === 0) {
       demon = new Sprite(width/2, height/2 - 50, 0, 0);
       demon.addAni("idle", demonIdle);
       demon.addAni("walk", demonRun);
       demon.ani = "idle";
-      demons++;
+      demons++
     }
     demon.friction = 0;
     demon.moveTowards(player.position.x, player.position.y, 0.005);
@@ -281,36 +293,31 @@ function draw() {
   }
 
   if(state === 5){
-
-    if(numberOfButtons === 1){
-      button = new Sprite(buttons[0].x, buttons[0].y);
-      button.addImage("down", buttonImageDown);
-      button.addImage("idle", buttonImageUp );
-      button.scale = 0.2;
-      groupButton.add(button);
-      numberOfButtons ++;
+    if (mouse.presses('right')) {
+      new button.Sprite(108, 295);
+      button.pressed = false;
     }
-
-
     lines = levelFourLines;
     putInArray();
     display();
-
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
   }
 
   if(state === 6){
-    if(numberOfButtons === 2){
-      button = new Sprite(buttons[1].x, buttons[1].y);
-      button.addImage("down", buttonImageDown);
-      button.addImage("idle", buttonImageUp );
-      button.scale = 0.2;
-      groupButton.add(button);
-      numberOfButtons ++;
+    if (mouse.presses('right')) {
+      new button.Sprite(919, 292);
+      button.pressed = false;
     }
     lines = levelFiveLines;
     putInArray();
     display();
-
+    crab.remove();
+    if(crabs === 1){
+      crabs--;
+    }
   }
 
   //Player Movement
@@ -323,8 +330,7 @@ function draw() {
   door2.static = true;
   door3.static = true;
   door4.static = true;
-  groupButton.static = true;
-
+  button.static = true;
 
   //Collision
   checkCollision();
@@ -461,31 +467,29 @@ function playerMovement(){
   if (kb.pressing("left") && player.x > 45) {
     player.ani = "left";
     player.ani.scale = 2.5;
-    player.vel.x = -2;
+    player.move(10, "left", 3);
     playerFacing = "left";
   }
   else if (kb.pressing("right")&& player.x < 985) {
     player.ani = "right";
     player.ani.scale = 2.5;
-    player.vel.x = 2;
+    player.move(10, "right", 3);
     playerFacing = "right";
   }
   else if (kb.pressing("up") && player.y > 65) {
     player.ani = "up";
     player.ani.scale = 2.5;
-    player.vel.y = -2;
+    player.move(10, "up", 3);
     playerFacing = "up";
   }
   else if (kb.pressing("down") && player.y < 505) {
     player.ani = "down";
     player.ani.scale = 2.5;
-    player.vel.y = 2;
+    player.move(10, "down", 3);
     playerFacing = "down";
   }
   else {
     player.ani.scale = 2.5;
-    player.vel.x = 0;
-    player.vel.y =0;
   }
 }
 
@@ -517,9 +521,11 @@ function checkCollision(){
   player.overlap(door2, touchingDoor2);
   player.overlap(door3, touchingDoor3);
   player.overlap(door4, touchingDoor4);
-  player.overlap(groupButton, buttonIsPressed);
+  player.overlap(button, buttonIsPressed);
   // player.overlap(demon, demonCheck)
 }
+
+
 
 function demonCheck() {
   
@@ -536,16 +542,11 @@ function demonWalk() {
 
 //Alonso
 function buttonIsPressed(){
-  for (let i = 3; i < groupButton.length; i++){
-    if(groupButton[i].image.name !== "down"){
-      buttonsPressed ++;
-    }
-    groupButton[i].image = "down";
+  if(button.pressed === false ){
+    buttonsPressed ++;
   }
-
+  button.pressed = true;
 }
-
-
 
 function buttonOpen() {
   if(buttonsPressed === 3){
@@ -568,16 +569,16 @@ function touchingDoor(){
 
 // Bottom Door Teleport
 function touchingDoor2(){
-  if (buttonsPressed === 3) {
+  if (buttonsPressed === 1) {
     if (state === 1) {
       state = 4;
       player.position.y = 475;
     }
   }
-  if (state === 2) {
-    state = 1;
-    player.position.y = 475;
-  }
+    if (state === 2) {
+      state = 1;
+      player.position.y = 475;
+    }
   
 }
 
