@@ -253,13 +253,14 @@ function draw() {
       crab.moveTowards(player.position.x, player.position.y, 0.01);
       crab.collide = false;
       counter = 1;
+      display();
     }
 
     if(counter > 1){
-
+    
     }
     else if (counter === 0){
-      
+      display();
     }
     for( let i = 0; i < crab.length; i++){
       crab[i].moveTowards(player.position.x, player.position.y, 0.01);
@@ -447,11 +448,14 @@ function showTile(location, x, y) {
   }
   else if (location === "s") {
     image(dL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+
+  }
   
+  else if (location === "d" && state === 2 && counter === 1) {
+    image(closedDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "d") {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  
   }
   else if (location === "D" && state === 1 && buttonsPressed === 3) {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
@@ -542,7 +546,7 @@ function demonCheck() {
 }
 
 function demonWalk() {
-  if (player.position.x >= demon.position.x) {
+  if (player.position.x <= demon.position.x) {
     demon.ani = "walk";
   }
   else {
