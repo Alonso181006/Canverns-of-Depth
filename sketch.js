@@ -686,9 +686,11 @@ function touchingDoor3(){
     state = 5;
     player.position.x = 950;
   }
-  if (state === 6) {
-    state = 1;
-    player.position.x = 950;
+  if (counter === 0) {
+    if (state === 6) {
+      state = 1;
+      player.position.x = 950;
+    }
   }
 }
 
@@ -698,9 +700,11 @@ function touchingDoor4(){
     state = 6;
     player.position.x = 75;
   }
-  if (state === 5) {
-    state = 1;
-    player.position.x = 75;
+  if (counter === 0) {
+    if (state === 5) {
+      state = 1;
+      player.position.x = 75;
+    }
   }
   
 }
