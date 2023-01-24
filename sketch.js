@@ -41,7 +41,7 @@ let lastTimeSwitched = -100;
 let damagePerSecond = 100;
 let playerFacing = "left";
 let demon, demonIdle, demonRun, demons = 0;
-let immortal = false;
+let immortal = true;
 let states = [2, 5,6];
 let counter;
 
@@ -221,6 +221,7 @@ function putInArray() {
 function draw() {
   //homeBase
   if (state === 1) {
+    button.remove();
     lines = levelOneLines; 
     putInArray();
     display();
@@ -251,14 +252,14 @@ function draw() {
       new crab.Sprite(width/2 + 100, height/2);
       crab.friction = 4;
       crab.moveTowards(player.position.x, player.position.y, 0.01);
-      crab.collide = false;
       counter = 1;
+      for( let i = 0; i < crab.length; i++){
+        crab[i].hit = false;
+      }
       display();
     }
 
-    if(counter > 1){
-    
-    }
+
     else if (counter === 0){
       display();
     }
@@ -526,6 +527,7 @@ function checkCollision(){
     lastTimeSwitched = player.overlapping(crab);
   }
 
+  shot.overlap(crab, isHit);
   shot.overlap(crab, eliminate);
   shot.overlap(door, eliminateShot);
   shot.overlap(door2, eliminateShot);
@@ -539,6 +541,24 @@ function checkCollision(){
   // player.overlap(demon, demonCheck)
 }
 
+function isHit(){
+  for (let i = 0; i< crab.length; i++){
+    if(shot.overlapping(crab[i])){
+      crab[i].hit = true;
+    }
+  }
+}
+
+//Remove dead enemy
+function eliminate(){
+  for(let i = 0; i< crab.length; i++){
+    if(crab[i].hit === true){
+      crab.remove();
+      counter --;
+    }
+  }
+
+}
 
 
 function demonCheck() {
@@ -583,7 +603,7 @@ function touchingDoor(){
 
 // Bottom Door Teleport
 function touchingDoor2(){
-  if (buttonsPressed === 1) {
+  if (buttonsPressed === 3) {
     if (state === 1) {
       state = 4;
       player.position.y = 475;
@@ -632,11 +652,6 @@ function loseHealth(){
   }
 }
 
-//Remove dead enemy
-function eliminate(){
-  crab.remove();
-  counter --;
-}
 function eliminateShot(){
   shot.remove();
 }
