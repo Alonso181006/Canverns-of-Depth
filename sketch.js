@@ -39,9 +39,12 @@ let damagePerSecond = 100;
 let playerFacing = "left";
 let demon, demonIdle, demonRun, demonDamage, demons = 0;
 let immortal = false;
-let counter;
+let counter = 0;
 let startImage, resetImage;
-let song
+let song;
+let openDoor;
+let closedDoor;
+let crab_attack;
 
 
 
@@ -119,6 +122,14 @@ function preload() {
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab4.png",
     "gameSprites/Crab Enemy Camacebra Games/Idle/Crab5.png"
   );
+  
+  crab_attack = loadAnimation(
+    "gameSprites/Crab Enemy Camacebra Games/Attack/Crab_Attack1.png",
+    "gameSprites/Crab Enemy Camacebra Games/Attack/Crab_Attack2.png",
+    "gameSprites/Crab Enemy Camacebra Games/Attack/Crab_Attack3.png",
+    "gameSprites/Crab Enemy Camacebra Games/Attack/Crab_Attack4.png"
+  );
+
   demonIdle = loadAnimation(
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_1.png",
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_2.png",
@@ -247,7 +258,7 @@ function draw() {
   if (state === 0){
     image(startImage, 0, 0, width, height);
     player.visible =  false;
-    if(keyCode === 32){
+    if(keyCode === 13){
       state = 1;
       song.play();
       player.visible = true;
@@ -273,7 +284,7 @@ function draw() {
       new crab.Sprite(width/2 + 100, height/2);
       crab.friction = 0;
       crab.moveTowards(player.position.x, player.position.y, 0.01);
-      counter = 2;
+      counter += 2;
       for( let i = 0; i < crab.length; i++){
         crab[i].hit = false;
       }
@@ -286,6 +297,14 @@ function draw() {
     //Constantly update Player.x and Player.y
     for( let i = 0; i < crab.length; i++){
       crab[i].moveTowards(player.position.x, player.position.y, 0.01);
+      if(crab[i].x >= player.x -25 && crab[i].x <= player.x +25){
+        if(crab[i].y >= player.y -25 && crab[i].y <= player.y +25){
+          crab[i].addAni("attack", crab_attack);
+        }
+        else{
+          crab[i].ani = "idle";
+        }
+      }
     }
 
     //Load Background
@@ -528,7 +547,7 @@ function playerMovement(){
     player.move(4, "left", 10);
     playerFacing = "left";
   }
-  else if (kb.pressing("right")&& player.x < 985) {
+  else if (kb.pressing("right") && player.x < 985) {
     player.ani = "right";
     player.ani.scale = 2.5;
     player.move(4, "right", 10);
@@ -733,33 +752,35 @@ function keyReleased(){
   }
   //Space is pressed create projectile based on player orientation
   else{
-    if(keyCode === 32 && playerFacing  === "left"){
-      spears -= 1;
-      fireball = new Sprite(player.position.x-1, player.position.y);
-      fireball.addImage("idle", fireballImage);
+    if(counter !== 0){
+      if(keyCode === 32 && playerFacing  === "left"){
+        spears -= 1;
+        fireball = new Sprite(player.position.x-1, player.position.y);
+        fireball.addImage("idle", fireballImage);
 
-      fireballs.add(fireball);
-    }
-    else if(keyCode === 32 && playerFacing  === "right"){
-      spears -= 1;
-      fireball = new Sprite(player.position.x +1, player.position.y );
-      fireball.addImage("idle", fireballImage);
+        fireballs.add(fireball);
+      }
+      else if(keyCode === 32 && playerFacing  === "right"){
+        spears -= 1;
+        fireball = new Sprite(player.position.x +1, player.position.y );
+        fireball.addImage("idle", fireballImage);
 
-      fireballs.add(fireball);
-    }
-    else if(keyCode === 32 && playerFacing  === "up"){
-      spears -= 1;
-      fireball = new Sprite(player.position.x, player.position.y -1);
-      fireball.addImage("idle", fireballImage);
+        fireballs.add(fireball);
+      }
+      else if(keyCode === 32 && playerFacing  === "up"){
+        spears -= 1;
+        fireball = new Sprite(player.position.x, player.position.y -1);
+        fireball.addImage("idle", fireballImage);
 
-      fireballs.add(fireball);
-    }
-    else if(keyCode === 32 && playerFacing  === "down"){
-      spears -= 1;
-      fireball = new Sprite(player.position.x +1, player.position.y +1);
-      fireball.addImage("idle", fireballImage);
+        fireballs.add(fireball);
+      }
+      else if(keyCode === 32 && playerFacing  === "down"){
+        spears -= 1;
+        fireball = new Sprite(player.position.x +1, player.position.y +1);
+        fireball.addImage("idle", fireballImage);
 
-      fireballs.add(fireball);
+        fireballs.add(fireball);
+      }
     }
   }
 }
