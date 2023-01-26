@@ -327,10 +327,7 @@ function draw() {
   if (state === 2) {
     //create content 
     if (mouse.presses("right")) {
-      new button.Sprite(511, 444);
       button.pressed = false;
-      new crab.Sprite(width/2, height/2);
-      new crab.Sprite(width/2 + 100, height/2);
       crab.friction = 0;
       crab.moveTowards(player.position.x, player.position.y, 0.01);
       counter += 2;
@@ -822,9 +819,11 @@ function buttonOpen() {
 
 //Top Door Teleport
 function touchingDoor(){
-
   if (state === 1) {
     state = 2;
+    new button.Sprite(511, 444);
+    new crab.Sprite(width/2, height/2);
+    new crab.Sprite(width/2 + 100, height/2);
     player.position.y = 100;
   }
 }

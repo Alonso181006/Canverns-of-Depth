@@ -348,20 +348,13 @@ function draw() {
   //bottom room
   if (state === 2) {
     //create content 
-    if (mouse.presses("right")) {
-      new button.Sprite(511, 444);
-      button.pressed = false;
-      new crab.Sprite(width/2, height/2);
-      new crab.Sprite(width/2 + 100, height/2);
-      crab.friction = 0;
-      crab.moveTowards(player.position.x, player.position.y, 0.01);
-      counter += 2;
-      for( let i = 0; i < crab.length; i++){
-        crab[i].hit = false;
-      }
-      display();
+    for( let i = 0; i < crab.length; i++){
+      crab[i].hit = false;
     }
-    else if (counter === 0){
+    if(counter !== 0){
+      display
+    }
+    if (counter === 0){
       display();
     }
 
@@ -429,23 +422,8 @@ function draw() {
 
   //Left Room
   if(state === 5){
-    //create content 
-    if (mouse.presses("right")) {
-      new button.Sprite(108, 295);
-      button.pressed = false;
-      new orc.Sprite(width/2, height/2);
-      new orc.Sprite(width/2 + 100, height/2);
-      orc.friction = 0;
-      orc.moveTowards(player.position.x, player.position.y, 0.01);
-      counter += 2;
-      for( let i = 0; i < orc.length; i++){
-        orc[i].hit = false;
-      }
+    //display content 
       display();
-    }
-    else if (counter === 0){
-      display();
-    }
 
     //Constantly update Player.x and Player.y
     for( let i = 0; i < orc.length; i++){
@@ -481,23 +459,8 @@ function draw() {
 
   // Right Room
   if(state === 6){
-    //Create content
-    if (mouse.presses("right")) {
-      new button.Sprite(919, 292);
-      button.pressed = false;
-      new chomper.Sprite(width/2, height/2);
-      new chomper.Sprite(width/2 + 100, height/2);
-      chomper.friction = 0;
-      chomper.moveTowards(player.position.x, player.position.y, 0.01);
-      counter += 2;
-      for( let i = 0; i < chomper.length; i++){
-        chomper[i].hit = false;
-      }
-      display();
-    }
-    else if (counter === 0){
-      display();
-    }
+    // display content
+    display();
 
     //Constantly update Player.x and Player.y
     for( let i = 0; i < chomper.length; i++){
@@ -881,9 +844,15 @@ function buttonOpen() {
 
 //Top Door Teleport
 function touchingDoor(){
-
   if (state === 1) {
     state = 2;
+    new button.Sprite(511, 444);
+    new crab.Sprite(width/2, height/2);
+    new crab.Sprite(width/2 + 100, height/2);
+    button.pressed = false;
+    crab.friction = 0;
+    crab.moveTowards(player.position.x, player.position.y, 0.01);
+    counter += 2;
     player.position.y = 100;
   }
 }
@@ -916,6 +885,16 @@ function touchingDoor2(){
 function touchingDoor3(){
   if (state === 1) {
     state = 5;
+    new button.Sprite(108, 295);
+    button.pressed = false;
+    new orc.Sprite(width/2, height/2);
+    new orc.Sprite(width/2 + 100, height/2);
+    orc.friction = 0;
+    orc.moveTowards(player.position.x, player.position.y, 0.01);
+    counter += 2;
+    for( let i = 0; i < orc.length; i++){
+      orc[i].hit = false;
+    }
     player.position.x = 950;
   }
   if (counter === 0) {
@@ -930,6 +909,16 @@ function touchingDoor3(){
 function touchingDoor4(){
   if (state === 1) {
     state = 6;
+    new button.Sprite(919, 292);
+    button.pressed = false;
+    new chomper.Sprite(width/2, height/2);
+    new chomper.Sprite(width/2 + 100, height/2);
+    chomper.friction = 0;
+    chomper.moveTowards(player.position.x, player.position.y, 0.01);
+    counter += 2;
+    for( let i = 0; i < chomper.length; i++){
+      chomper[i].hit = false;
+    }
     player.position.x = 75;
   }
   if (counter === 0) {
