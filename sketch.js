@@ -416,8 +416,13 @@ function draw() {
     demon.friction = 4;
     demon.moveTowards(player.position.x, player.position.y, 0.01);
     demon.rotation = 0;
-    demonWalk();
     updateDemonHealth(demonHealth, maxDemonHealth);
+    if (player.overlapping(demon)) {
+      demonCleave();
+    }
+    else {
+      demonWalk();
+    }
   }
 
   //Left Room
