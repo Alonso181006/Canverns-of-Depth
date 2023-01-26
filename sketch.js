@@ -21,10 +21,10 @@ let state = 0;
 let player, player_right, player_left, player_up, player_down;
 let player_down_attack, player_left_attack, player_right_attack, player_up_attack;
 let crab, crab_idle;
-let health = 25;
+let health = 50;
 let demonHealth = 100;
 let maxDemonHealth = 100;
-let maxHealth = 25;
+let maxHealth = 50;
 let spears = 550;
 let fireballs, fireball, fireballImage;
 let speed = 2;
@@ -39,6 +39,7 @@ let buttonsPressed = 0;
 let buttonImage = "up";
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
+let spawnEnemiesPerSecond = 1000;
 let playerFacing = "left";
 let demon, demonIdle, demonRun, demonDamage, demons = 0;
 let immortal = false;
@@ -329,7 +330,7 @@ function draw() {
   if (state === 0){
     image(startImage, 0, 0, width, height);
     player.visible =  false;
-    buttonsPressed = 0;
+    buttonsPressed = 3;
     if(keyCode === 13){
       state = 1;
       song.play();
@@ -394,7 +395,7 @@ function draw() {
       player.visible = true;
       player.x = width/2;
       player.y = height/2;
-      health = 20;
+      health = 50;
     }
     else if (counter === 0){
       display();
@@ -737,11 +738,8 @@ function checkCollision(){
 
 
 
-  player.overlap(crab, loseHealth);
   fireball.overlap(crab, isCrabHit);
-  player.overlap(orc, loseHealth);
   fireball.overlap(orc, isOrcHit);
-  player.overlap(chomper, loseHealth);
   fireball.overlap(chomper, isChomperHit);
   fireball.overlap(demon, demonIsHit);
   fireball.overlap(door, eliminateFireball);
@@ -757,6 +755,9 @@ function checkCollision(){
   player.overlap(button, buttonIsPressed);
   player.overlap(demon, demonCleave);
   player.overlap(potion, addHealth);
+  player.overlap(crab, isCrabStruck);
+  player.overlap(orc, isOrcStrcuk);
+  player.overlap(chomper, isOrcStrcuk);
 
 }
 
@@ -764,7 +765,7 @@ function checkCollision(){
 function isCrabHit(){
   for (let i = 0; i< crab.length; i++){
     if(fireball.overlapping(crab[i])){
-      if( maxHealth !== health && random(100)> 50){
+      if( maxHealth >= health && random(100)> 50){
         new potion.Sprite(crab[i].x, crab[i].y);
       }
       crab[i].remove();
@@ -776,7 +777,7 @@ function isCrabHit(){
 function isOrcHit(){
   for (let i = 0; i< orc.length; i++){
     if(fireball.overlapping(orc[i])){
-      if( maxHealth !== health && random(100)> 50){
+      if( maxHealth >= health && random(100)> 50){
         new potion.Sprite(orc[i].x, orc[i].y);
       }
       orc[i].remove();
@@ -788,11 +789,65 @@ function isOrcHit(){
 function isChomperHit(){
   for (let i = 0; i< chomper.length; i++){
     if(fireball.overlapping(chomper[i])){
-      if( maxHealth !== health && random(100)> 50){
+      if( maxHealth >= health && random(100)> 50){
         new potion.Sprite(chomper[i].x, chomper[i].y);
       }
       chomper[i].remove();
       counter --;
+    }
+  }
+}
+
+function isCrabStruck(){
+  for (let i = 0; i< crab.length; i++){
+    if(player.overlapping(crab[i]) && (player.ani.name === "a_right" || player.ani.name === "a_left" || player.ani.name === "a_up" || player.ani.name === "a_down")){
+      if( maxHealth >= health && random(100)> 50){
+        new potion.Sprite(crab[i].x, crab[i].y);
+      }
+      crab[i].remove();
+      counter --;
+    }
+    else{
+      health -= 5;
+      if(health <= 0){
+        state = 3;
+      }
+    }
+  }
+}
+
+function isOrcStrcuk(){
+  for (let i = 0; i< orc.length; i++){
+    if(player.overlapping(orc[i]) && (player.ani.name === "a_right" || player.ani.name === "a_left" || player.ani.name === "a_up" || player.ani.name === "a_down")){
+      if( maxHealth >= health && random(100)> 50){
+        new potion.Sprite(orc[i].x, orc[i].y);
+      }
+      orc[i].remove();
+      counter --;
+    }
+    else{
+      health -= 5;
+      if(health <= 0){
+        state = 3;
+      }
+    }
+  }
+}
+
+function isChomperStruck(){
+  for (let i = 0; i< chomper.length; i++){
+    if(player.overlapping(chomper[i]) && (player.ani.name === "a_right" || player.ani.name === "a_left" || player.ani.name === "a_up" || player.ani.name === "a_down")){
+      if( maxHealth >= health && random(100)> 50){
+        new potion.Sprite(chomper[i].x, chomper[i].y);
+      }
+      chomper[i].remove();
+      counter --;
+    }
+    else{
+      health -= 5;
+      if(health <= 0){
+        state = 3;
+      }
     }
   }
 }
@@ -937,11 +992,9 @@ function touchingDoor4(){
 
 //Damage Player
 function loseHealth(){
-  if (immortal === false) {
-    health -= 5;
-    if(health <= 0){
-      state = 3;
-    }
+  health -= 5;
+  if(health <= 0){
+    state = 3;
   }
 }
 
