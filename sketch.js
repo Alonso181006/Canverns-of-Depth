@@ -32,7 +32,7 @@ let buttonstate;
 let t = 0;
 let doOnce = 0;
 let buttonImageUp, buttonImageDown;
-let buttonsPressed = 0;
+let buttonsPressed = 3;
 let buttonImage = "up";
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
@@ -226,6 +226,7 @@ function setup() {
 
   //Create Boss
   demon = new Sprite(width/2, height/2 - 50, 50, 50);
+  demon.alive = true;
   demon.remove();
 
 
@@ -353,6 +354,9 @@ function draw() {
       player.y = height/2;
       health = 20;
     }
+    else if (counter === 0){
+      display();
+    }
   }
 
   //top room
@@ -367,7 +371,7 @@ function draw() {
     demon.addAni("walk", demonRun);
     demon.addAni("cleave", demonDamage);
     demon.ani = "idle";
-    demon.friction = 0;
+    demon.friction = 4;
     demon.moveTowards(player.position.x, player.position.y, 0.01);
     demon.rotation = 0;
     demonWalk();
@@ -397,8 +401,8 @@ function draw() {
     for( let i = 0; i < orc.length; i++){
       orc[i].moveTowards(player.position.x, player.position.y, 0.01);
       if (orc[i].x >= player.x){
-        if(orc[i].x >= player.x -25 && orc[i].x <= player.x +25){
-          if(orc[i].y >= player.y -25 && orc[i].y <= player.y +25){
+        if(orc[i].x >= player.x -35 && orc[i].x <= player.x +35){
+          if(orc[i].y >= player.y -35 && orc[i].y <= player.y +35){
             orc[i].addAni("attack_left", orc_attack_left);
           }
           else{
@@ -407,8 +411,8 @@ function draw() {
         }
       }
       if (orc[i].x <= player.x){
-        if(orc[i].x >= player.x -25 && orc[i].x <= player.x +25){
-          if(orc[i].y >= player.y -25 && orc[i].y <= player.y +25){
+        if(orc[i].x >= player.x -35 && orc[i].x <= player.x +35){
+          if(orc[i].y >= player.y -35 && orc[i].y <= player.y +35){
             orc[i].addAni("attack_right", orc_attack_right);
           }
           else{
@@ -563,13 +567,21 @@ function showTile(location, x, y) {
   else if (location === "s") {
     image(dL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  else if (location === "d" && state === 2 && counter  > 0) {
+  else if (location === "d" && counter  > 0) {
+    image(closedDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  //for boss room
+  else if (location === "d" && state === 4) {
     image(closedDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "d") {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
+
   else if (location === "D" && state === 1 && buttonsPressed === 3) {
+    image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "D" && state === 4 && demon.alive === false) {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "D") {
@@ -638,6 +650,11 @@ function checkCollision(){
     loseHealth();
     lastTimeSwitched = player.overlapping(crab);
   }
+  
+  if(player.overlapping(orc) > lastTimeSwitched + damagePerSecond){
+    loseHealth();
+    lastTimeSwitched = player.overlapping(orc);
+  }
 
   player.overlap(crab, loseHealth);
   fireball.overlap(crab, isCrabHit);
@@ -678,9 +695,9 @@ function isOrcHit(){
 
 //damage to demon
 function demonIsHit() {
-  if (fireball.overlapping(demon)) {
-    demon.remove();
-  }
+  demon.remove();
+  demon.alive = false;
+  display();
 }
 
 //demon faces player when walking
@@ -703,8 +720,6 @@ function demonCleave() {
     demon.mirror.x = false;
   }
   demon.ani = "cleave";
-
-
 }
 
 //Count when Button is Pressed
@@ -729,10 +744,6 @@ function touchingDoor(){
     state = 2;
     player.position.y = 100;
   }
-  if (state === 4) {
-    state = 1;
-    player.position.y = 100;
-  }
 }
 
 // Bottom Door Teleport
@@ -749,12 +760,11 @@ function touchingDoor2(){
       player.position.y = 475;
     }
   }
-  
-  if (state === 4) {
-    if (demons === 0) {
-      demon = new Sprite(width/2, height/2 - 50, 100, 50);
-      demons++;
-    }
+  if (state === 4 && demon.alive === false) {
+    state = 0;
+  }
+  if (state === 4 && demon.alive === true) {
+    demon = new Sprite(width/2, height/2 - 50, 288, 160);
   }
     
 }
@@ -812,7 +822,7 @@ function keyReleased(){
   }
   //Space is pressed create projectile based on player orientation
   else{
-    if(counter !== 0){
+    // if(counter !== 0){
       if(keyCode === 32 && playerFacing  === "left"){
         spears -= 1;
         fireball = new Sprite(player.position.x-1, player.position.y);
@@ -841,7 +851,7 @@ function keyReleased(){
 
         fireballs.add(fireball);
       }
-    }
+    // }
   }
 }
 
