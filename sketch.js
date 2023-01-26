@@ -45,6 +45,8 @@ let song;
 let openDoor;
 let closedDoor;
 let crab_attack;
+let orc, orc_idle_left,orc_idle_right, orc_attack_left, orc_attack_right;
+let previousState;
 
 
 
@@ -58,7 +60,7 @@ function preload() {
   levelFiveLines= loadStrings("right.text");
 
   //load background music
-  song = loadSound("gameSFX/seriousMusic.mp3")
+  song = loadSound("gameSFX/seriousMusic.mp3");
 
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
@@ -130,6 +132,22 @@ function preload() {
     "gameSprites/Crab Enemy Camacebra Games/Attack/Crab_Attack4.png"
   );
 
+  orc_idle_left = loadAnimation(
+    "gameSprites/orcSprites/orcWalk/OBL.png",
+    { frameSize: [32, 32], frames: 4 });
+
+  orc_idle_right = loadAnimation(
+    "gameSprites/orcSprites/orcWalk/OBR.png",
+    { frameSize: [32, 32], frames: 4 });
+
+  orc_attack_left = loadAnimation(
+    "gameSprites/orcSprites/orcAttack/OABL.png",
+    { frameSize: [32, 32], frames: 4 });
+
+  orc_attack_right = loadAnimation(
+    "gameSprites/orcSprites/orcAttack/OABR.png",
+    { frameSize: [32, 32], frames: 4 });
+
   demonIdle = loadAnimation(
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_1.png",
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_2.png",
@@ -200,6 +218,12 @@ function setup() {
   crab.addAni("idle", crab_idle);
   crab.rotation = 0;
 
+  orc = new Group();
+  orc.addAni("idle_right", orc_idle_right);
+  orc.addAni("idle_left", orc_idle_left);
+  orc.scale = 2.0;
+  orc.rotation = 0;
+
   //Create Boss
   demon = new Sprite(width/2, height/2 - 50, 50, 50);
   demon.remove();
@@ -263,7 +287,6 @@ function draw() {
       song.play();
       player.visible = true;
     }
-
   }
   //HomeBase
   if (state === 1) {
@@ -272,7 +295,6 @@ function draw() {
     putInArray();
     display();
   }
-
 
   //bottom room
   if (state === 2) {
@@ -321,6 +343,8 @@ function draw() {
     player.visible = false;
     crab.remove();
     button.remove();
+    orc.remove();
+    fireballs.remove();
     image(resetImage, 0, 0, width, height);
     if(kb.pressing("r")){
       state = 1;
@@ -351,17 +375,17 @@ function draw() {
 
   //Left Room
   if(state === 5){
-    //Create content
+    //create content 
     if (mouse.presses("right")) {
       new button.Sprite(108, 295);
       button.pressed = false;
-      new crab.Sprite(width/2, height/2);
-      new crab.Sprite(width/2 + 100, height/2);
-      crab.friction = 0;
-      crab.moveTowards(player.position.x, player.position.y, 0.01);
-      counter = 2;
-      for( let i = 0; i < crab.length; i++){
-        crab[i].hit = false;
+      new orc.Sprite(width/2, height/2);
+      new orc.Sprite(width/2 + 100, height/2);
+      orc.friction = 0;
+      orc.moveTowards(player.position.x, player.position.y, 0.01);
+      counter += 2;
+      for( let i = 0; i < orc.length; i++){
+        orc[i].hit = false;
       }
       display();
     }
@@ -370,12 +394,33 @@ function draw() {
     }
 
     //Constantly update Player.x and Player.y
-    for( let i = 0; i < crab.length; i++){
-      crab[i].moveTowards(player.position.x, player.position.y, 0.01);
+    for( let i = 0; i < orc.length; i++){
+      orc[i].moveTowards(player.position.x, player.position.y, 0.01);
+      if (orc[i].x >= player.x){
+        if(orc[i].x >= player.x -25 && orc[i].x <= player.x +25){
+          if(orc[i].y >= player.y -25 && orc[i].y <= player.y +25){
+            orc[i].addAni("attack_left", orc_attack_left);
+          }
+          else{
+            orc[i].ani = "idle_left";
+          }
+        }
+      }
+      if (orc[i].x <= player.x){
+        if(orc[i].x >= player.x -25 && orc[i].x <= player.x +25){
+          if(orc[i].y >= player.y -25 && orc[i].y <= player.y +25){
+            orc[i].addAni("attack_right", orc_attack_right);
+          }
+          else{
+            orc[i].ani = "idle_right";
+          }
+        }
+      }
     }
 
-    //Create Background
+    //Load Background
     lines = levelFourLines;
+    checkCollision();
     putInArray();
     display();
   }
@@ -412,6 +457,10 @@ function draw() {
     display();
   }
 
+  if(previousState !== state){
+    fireballs.remove();
+  }
+  previousState = state;
   //Player Movement
   playerMovement();
   player.friction = 0;
@@ -591,7 +640,9 @@ function checkCollision(){
   }
 
   player.overlap(crab, loseHealth);
-  fireball.overlap(crab, isHit);
+  fireball.overlap(crab, isCrabHit);
+  player.overlap(orc, loseHealth);
+  fireball.overlap(orc, isOrcHit);
   fireball.overlap(demon, demonIsHit);
   fireball.overlap(door, eliminateFireball);
   fireball.overlap(door2, eliminateFireball);
@@ -602,14 +653,23 @@ function checkCollision(){
   player.overlap(door3, touchingDoor3);
   player.overlap(door4, touchingDoor4);
   player.overlap(button, buttonIsPressed);
-  player.overlap(demon, demonCleave)
+  player.overlap(demon, demonCleave);
 }
 
 // Checking which Sprite in the group is hit
-function isHit(){
+function isCrabHit(){
   for (let i = 0; i< crab.length; i++){
     if(fireball.overlapping(crab[i])){
       crab[i].remove();
+      counter --;
+    }
+  }
+}
+
+function isOrcHit(){
+  for (let i = 0; i< orc.length; i++){
+    if(fireball.overlapping(orc[i])){
+      orc[i].remove();
       counter --;
     }
   }
@@ -693,7 +753,7 @@ function touchingDoor2(){
   if (state === 4) {
     if (demons === 0) {
       demon = new Sprite(width/2, height/2 - 50, 100, 50);
-      demons++
+      demons++;
     }
   }
     
