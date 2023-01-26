@@ -20,8 +20,8 @@ let d;
 let state = 0;
 let player, player_right, player_left, player_up, player_down;
 let crab, crab_idle;
-let health = 20;
-let maxHealth = 20;
+let health = 15;
+let maxHealth = 25;
 let spears = 550;
 let fireballs, fireball, fireballImage;
 let speed = 2;
@@ -32,7 +32,7 @@ let buttonstate;
 let t = 0;
 let doOnce = 0;
 let buttonImageUp, buttonImageDown;
-let buttonsPressed = 3;
+let buttonsPressed = 0;
 let buttonImage = "up";
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
@@ -47,6 +47,8 @@ let closedDoor;
 let crab_attack;
 let orc, orc_idle_left,orc_idle_right, orc_attack_left, orc_attack_right;
 let previousState;
+let chomper, chomper_right, chomper_left;
+let potion, potionImage;
 
 
 
@@ -148,6 +150,14 @@ function preload() {
     "gameSprites/orcSprites/orcAttack/OABR.png",
     { frameSize: [32, 32], frames: 4 });
 
+  chomper_left = loadAnimation(
+    "gameSprites/leftChomp.png",
+    { frameSize: [32, 32], frames: 8 });
+  
+  chomper_right = loadAnimation(
+    "gameSprites/rightChomp.png",
+    { frameSize: [32, 32], frames: 8 });
+
   demonIdle = loadAnimation(
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_1.png",
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_2.png",
@@ -192,10 +202,12 @@ function preload() {
   //fireball Images
   fireballImage = loadImage("gameSprites/humanSprites/humanAttack/fireball.png");
 
+  // Health Potion
+  potionImage = loadImage("gameSprites/healthBottle.png");
+
   //Start and Reset Screen
   startImage = loadImage("gameSFX/startScreen.gif");
   resetImage = loadImage("gameSFX/resetScreen.jpg");
-
   
 }
 
@@ -213,16 +225,28 @@ function setup() {
   button.addAni("down", buttonImageDown);
   button.addAni("idle", buttonImageUp );
 
+  //Create potion Group()
+  potion = new Group();
+  potion.addImage("idle", potionImage);
+
   //Create crab Group()
   crab = new Group();
   crab.addAni("idle", crab_idle);
   crab.rotation = 0;
 
+  //Create orc Group()
   orc = new Group();
   orc.addAni("idle_right", orc_idle_right);
   orc.addAni("idle_left", orc_idle_left);
   orc.scale = 2.0;
   orc.rotation = 0;
+
+  //Create chomper Group()
+  chomper = new Group();
+  chomper.addAni("idle_left", chomper_left);
+  chomper.addAni("idle_right", chomper_right);
+  chomper.rotation = 0;
+
 
   //Create Boss
   demon = new Sprite(width/2, height/2 - 50, 50, 50);
@@ -283,6 +307,7 @@ function draw() {
   if (state === 0){
     image(startImage, 0, 0, width, height);
     player.visible =  false;
+    buttonsPressed = 0;
     if(keyCode === 13){
       state = 1;
       song.play();
@@ -292,6 +317,7 @@ function draw() {
   //HomeBase
   if (state === 1) {
     button.remove();
+    counter = 0;
     lines = levelOneLines; 
     putInArray();
     display();
@@ -347,6 +373,7 @@ function draw() {
     orc.remove();
     fireballs.remove();
     image(resetImage, 0, 0, width, height);
+    buttonsPressed = 0;
     if(kb.pressing("r")){
       state = 1;
       player.visible = true;
@@ -435,25 +462,45 @@ function draw() {
     if (mouse.presses("right")) {
       new button.Sprite(919, 292);
       button.pressed = false;
-      new crab.Sprite(width/2, height/2);
-      new crab.Sprite(width/2 + 100, height/2);
-      crab.friction = 0;
-      crab.moveTowards(player.position.x, player.position.y, 0.01);
-      counter = 2;
-      for( let i = 0; i < crab.length; i++){
-        crab[i].hit = false;
+      new chomper.Sprite(width/2, height/2);
+      new chomper.Sprite(width/2 + 100, height/2);
+      chomper.friction = 0;
+      chomper.moveTowards(player.position.x, player.position.y, 0.01);
+      counter += 2;
+      for( let i = 0; i < chomper.length; i++){
+        chomper[i].hit = false;
       }
       display();
     }
-
     else if (counter === 0){
       display();
     }
 
     //Constantly update Player.x and Player.y
-    for( let i = 0; i < crab.length; i++){
-      crab[i].moveTowards(player.position.x, player.position.y, 0.01);
+    for( let i = 0; i < chomper.length; i++){
+      chomper[i].moveTowards(player.position.x, player.position.y, 0.01);
+      if (chomper[i].x >= player.x){
+        // if(chomper[i].x >= player.x -35 && chomper[i].x <= player.x +35){
+        //   if(chomper[i].y >= player.y -35 && chomper[i].y <= player.y +35){
+        //     chomper[i].addAni("attack_left", chomper_left);
+        //   }
+        //   else{
+        //     chomper[i].ani = "chomper_left";
+        //   }
+        // }
+      }
+      if (chomper[i].x <= player.x){
+        // if(chomper[i].x >= player.x -35 && chomper[i].x <= player.x +35){
+        //   if(chomper[i].y >= chomper.y -35 && chomper[i].y <= player.y +35){
+        //     chomper[i].addAni("attack_right", chomper_right);
+        //   }
+        //   else{
+        //     chomper[i].ani = "idle_right";
+        //   }
+        // }
+      }
     }
+
 
     //Create Background
     lines = levelFiveLines;
@@ -476,6 +523,8 @@ function draw() {
   door3.static = true;
   door4.static = true;
   button.static = true;
+
+
 
   //Collision
   checkCollision();
@@ -656,27 +705,44 @@ function checkCollision(){
     lastTimeSwitched = player.overlapping(orc);
   }
 
+  if(player.overlapping(chomper) > lastTimeSwitched + damagePerSecond){
+    loseHealth();
+    lastTimeSwitched = player.overlapping(chomper);
+  }
+
+
+
+
   player.overlap(crab, loseHealth);
   fireball.overlap(crab, isCrabHit);
   player.overlap(orc, loseHealth);
   fireball.overlap(orc, isOrcHit);
+  player.overlap(chomper, loseHealth);
+  fireball.overlap(chomper, isChomperHit);
   fireball.overlap(demon, demonIsHit);
   fireball.overlap(door, eliminateFireball);
   fireball.overlap(door2, eliminateFireball);
   fireball.overlap(door3, eliminateFireball);
   fireball.overlap(door4, eliminateFireball);
+  fireball.overlap(button, eliminateFireball);
+  allSprites.overlap(potion, makeTransparent);
   player.overlap(door, touchingDoor);
   player.overlap(door2, touchingDoor2);
   player.overlap(door3, touchingDoor3);
   player.overlap(door4, touchingDoor4);
   player.overlap(button, buttonIsPressed);
   player.overlap(demon, demonCleave);
+  player.overlap(potion, addHealth);
+
 }
 
 // Checking which Sprite in the group is hit
 function isCrabHit(){
   for (let i = 0; i< crab.length; i++){
     if(fireball.overlapping(crab[i])){
+      if(random(100)> 50){
+        new potion.Sprite(crab[i].x, crab[i].y);
+      }
       crab[i].remove();
       counter --;
     }
@@ -692,11 +758,21 @@ function isOrcHit(){
   }
 }
 
+function isChomperHit(){
+  for (let i = 0; i< chomper.length; i++){
+    if(fireball.overlapping(chomper[i])){
+      chomper[i].remove();
+      counter --;
+    }
+  }
+}
+
 
 //damage to demon
 function demonIsHit() {
   demon.remove();
   demon.alive = false;
+  counter--;
   display();
 }
 
@@ -765,6 +841,7 @@ function touchingDoor2(){
   }
   if (state === 4 && demon.alive === true) {
     demon = new Sprite(width/2, height/2 - 50, 288, 160);
+    counter++;
   }
     
 }
@@ -808,6 +885,27 @@ function loseHealth(){
   }
 }
 
+function addHealth(){
+  if (immortal === false) {
+    for(let i = 0; i < potion.length; i ++){
+      if(player.overlapping(potion[i])){
+        potion.collider = "static";
+        health += 5;
+        potion[i].remove();
+      }
+    }
+  }
+}
+
+function makeTransparent(){
+  if(potion.overlap(fireball)){
+    potion.collider = "none";
+  }
+  else{
+    potion.collider = "static";
+  }
+}
+
 //Delete fireball
 function eliminateFireball(){
   fireball.remove();
@@ -822,7 +920,7 @@ function keyReleased(){
   }
   //Space is pressed create projectile based on player orientation
   else{
-    // if(counter !== 0){
+    if(counter !== 0){
       if(keyCode === 32 && playerFacing  === "left"){
         spears -= 1;
         fireball = new Sprite(player.position.x-1, player.position.y);
@@ -851,7 +949,7 @@ function keyReleased(){
 
         fireballs.add(fireball);
       }
-    // }
+    }
   }
 }
 
