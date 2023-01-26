@@ -187,36 +187,36 @@ function preload() {
     "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/01_demon_idle/demon_idle_6.png"
   );
   demonRun = loadAnimation(
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_1.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_2.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_3.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_4.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_5.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_6.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_7.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_8.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_9.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_10.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_11.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/02_demon_walk/demon_walk_12.png"
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_1.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_2.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_3.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_4.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_5.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_6.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_7.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_8.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_9.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_10.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_11.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonWalk/demon_walk_12.png"
   );
 
   demonDamage = loadAnimation(
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_1.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_2.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_3.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_4.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_5.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_6.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_7.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_8.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_9.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_10.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_11.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_12.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_13.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_14.png",
-    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/03_demon_cleave/demon_cleave_15.png"
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_1.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_2.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_3.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_4.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_5.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_6.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_7.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_8.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_9.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_10.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_11.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_12.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_13.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_14.png",
+    "gameSprites/boss_demon_slime_FREE_v1.0/individual sprites/newDemonCleave/demon_cleave_15.png"
   );
 
   //fireball Images
@@ -878,10 +878,10 @@ function demonWalk() {
 //damage to player and rotates
 function demonCleave() {
   if (player.x > demon.x) {
-    demon.mirror.x = true;
+    demon.mirror.x = false;
   }
   else if (player.x <= demon.x) {
-    demon.mirror.x = false;
+    demon.mirror.x = true;
   }
   demon.ani = "cleave";
 }
