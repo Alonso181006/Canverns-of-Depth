@@ -37,7 +37,7 @@ let buttonImage = "up";
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
 let playerFacing = "left";
-let demon, demonIdle, demonRun, demonDamage, demons = 0;
+let demon, demonIdle, demonRun, demonDamage;
 let immortal = false;
 let counter;
 let startImage, resetImage;
@@ -166,6 +166,7 @@ function preload() {
   //Start and Reset Screen
   startImage = loadImage("gameSFX/startScreen.gif");
   resetImage = loadImage("gameSFX/resetScreen.jpg");
+  
 
   
 }
@@ -191,6 +192,7 @@ function setup() {
 
   //Create Boss
   demon = new Sprite(width/2, height/2 - 50, 50, 50);
+  demon.alive = true;
   demon.remove();
 
 
@@ -309,6 +311,9 @@ function draw() {
       player.x = width/2;
       player.y = height/2;
       health = 20;
+    }
+    else if (counter === 0){
+      display();
     }
   }
 
@@ -495,13 +500,19 @@ function showTile(location, x, y) {
   else if (location === "s") {
     image(dL, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
-  else if (location === "d" && state === 2 && counter  > 0) {
+  else if (location === "d" && state === 2 || state === 3 || state === 5 && counter  > 0) {
+    image(closedDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "d" && state === 4 && demon.alive === true || demon.alive === false) {
     image(closedDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "d") {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "D" && state === 1 && buttonsPressed === 3) {
+    image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "D" && state === 4 && demon.alive === false) {
     image(openDoor, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "D") {
@@ -599,9 +610,9 @@ function isHit(){
 
 //damage to demon
 function demonIsHit() {
-  if (fireball.overlapping(demon)) {
-    demon.remove();
-  }
+  demon.remove();
+  demon.alive = false;
+  display();
 }
 
 //demon faces player when walking
@@ -650,10 +661,11 @@ function touchingDoor(){
     state = 2;
     player.position.y = 100;
   }
-  if (state === 4) {
+  if (state === 4 && demon.alive === false) {
     state = 1;
     player.position.y = 100;
   }
+
 }
 
 // Bottom Door Teleport
@@ -672,9 +684,8 @@ function touchingDoor2(){
   }
   
   if (state === 4) {
-    if (demons === 0) {
+    if (demon.alive === true) {
       demon = new Sprite(width/2, height/2 - 50, 100, 50);
-      demons++
     }
   }
     
@@ -765,3 +776,4 @@ function keyReleased(){
 }
 
 
+//made so doors work visually
