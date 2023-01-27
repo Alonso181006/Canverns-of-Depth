@@ -39,13 +39,12 @@ let buttonsPressed = 0;
 let buttonImage = "up";
 let lastTimeSwitched = -100;
 let damagePerSecond = 100;
-let spawnEnemiesPerSecond = 1000;
 let playerFacing = "left";
 let demon, demonIdle, demonRun, demonDamage, demons = 0;
 let immortal = false;
 let counter = 0;
 let startImage, resetImage;
-let song;
+let song, bossMusic;
 let openDoor;
 let closedDoor;
 let crab_attack;
@@ -53,6 +52,7 @@ let orc, orc_idle_left,orc_idle_right, orc_attack_left, orc_attack_right;
 let previousState;
 let chomper, chomper_right, chomper_left;
 let potion, potionImage;
+let hole, black;
 
 
 
@@ -67,7 +67,7 @@ function preload() {
 
   //load background music
   song = loadSound("gameSFX/seriousMusic.mp3");
-
+  bossMusic = loadSound("gameSFX/why-do-i-hear-boss-music.mp3")
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
   sTile = loadImage("gameSprites/floorTileSprites/tile000.png");
@@ -105,6 +105,8 @@ function preload() {
   buttonImageUp = loadImage("gameSprites/tile000.png" );
   buttonImageDown= loadImage("gameSprites/tile001.png");
 
+  hole = loadImage("gameSprites/wallSprites/hole/hole.png");
+  black = loadImage("gameSprites/wallSprites/hole/void.png");
 
   //load player
   player_right = loadAnimation(
@@ -328,9 +330,12 @@ function putInArray() {
 function draw() {
   //Start Screen
   if (state === 0){
+    demon.alive = true;
+    bossMusic.stop();
+    song.stop();
     image(startImage, 0, 0, width, height);
     player.visible =  false;
-    buttonsPressed = 3;
+    buttonsPressed = 0;
     if(keyCode === 13){
       state = 1;
       song.play();
@@ -353,7 +358,7 @@ function draw() {
       crab[i].hit = false;
     }
     if(counter !== 0){
-      display
+      display()
     }
     if (counter === 0){
       display();
@@ -382,12 +387,17 @@ function draw() {
 
   //End room
   if(state === 3){
+    demon.alive = true;
+    bossMusic.stop();
+    song.stop();
     background(0);
     player.visible = false;
     crab.remove();
     button.remove();
     orc.remove();
+    chomper.remove();
     fireballs.remove();
+    demon.remove();
     image(resetImage, 0, 0, width, height);
     buttonsPressed = 0;
     if(kb.pressing("r")){
@@ -395,7 +405,8 @@ function draw() {
       player.visible = true;
       player.x = width/2;
       player.y = height/2;
-      health = 50;
+      health = 20;
+      song.play();
     }
     else if (counter === 0){
       display();
@@ -735,11 +746,19 @@ function checkCollision(){
     lastTimeSwitched = player.overlapping(chomper);
   }
 
+  if(player.overlapping(demon) > lastTimeSwitched + damagePerSecond){
+    loseHealthToDemon();
+    lastTimeSwitched = player.overlapping(demon);
+  }
 
 
 
+  player.overlap(demon, loseHealthToDemon);
+  player.overlap(crab, loseHealth);
   fireball.overlap(crab, isCrabHit);
+  player.overlap(orc, loseHealth);
   fireball.overlap(orc, isOrcHit);
+  player.overlap(chomper, loseHealth);
   fireball.overlap(chomper, isChomperHit);
   fireball.overlap(demon, demonIsHit);
   fireball.overlap(door, eliminateFireball);
@@ -935,6 +954,7 @@ function touchingDoor2(){
     state = 0;
   }
   if (state === 4 && demon.alive === true) {
+    bossMusic.loop();
     demon = new Sprite(width/2, height/2 - 50, 288, 160);
     counter++;
   }
@@ -992,9 +1012,20 @@ function touchingDoor4(){
 
 //Damage Player
 function loseHealth(){
-  health -= 5;
-  if(health <= 0){
-    state = 3;
+  if (immortal === false) {
+    health -= 5;
+    if(health <= 0){
+      state = 3;
+    }
+  }
+}
+
+function loseHealthToDemon(){
+  if (immortal === false) {
+    health -= 10;
+    if(health <= 0){
+      state = 3;
+    }
   }
 }
 

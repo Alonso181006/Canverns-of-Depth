@@ -21,10 +21,10 @@ let state = 0;
 let player, player_right, player_left, player_up, player_down;
 let player_down_attack, player_left_attack, player_right_attack, player_up_attack;
 let crab, crab_idle;
-let health = 25;
+let health = 50;
 let demonHealth = 100;
 let maxDemonHealth = 100;
-let maxHealth = 25;
+let maxHealth = 50;
 let spears = 550;
 let fireballs, fireball, fireballImage;
 let speed = 2;
@@ -332,6 +332,7 @@ function draw() {
   if (state === 0){
     demon.alive = true;
     bossMusic.stop();
+    song.stop();
     image(startImage, 0, 0, width, height);
     player.visible =  false;
     buttonsPressed = 0;
@@ -386,14 +387,15 @@ function draw() {
 
   //End room
   if(state === 3){
-    song.play();
     demon.alive = true;
     bossMusic.stop();
+    song.stop();
     background(0);
     player.visible = false;
     crab.remove();
     button.remove();
     orc.remove();
+    chomper.remove();
     fireballs.remove();
     demon.remove();
     image(resetImage, 0, 0, width, height);
@@ -404,6 +406,7 @@ function draw() {
       player.x = width/2;
       player.y = height/2;
       health = 20;
+      song.play();
     }
     else if (counter === 0){
       display();
@@ -744,14 +747,13 @@ function checkCollision(){
   }
 
   if(player.overlapping(demon) > lastTimeSwitched + damagePerSecond){
-    loseHealth();
-    loseHealth();
+    loseHealthToDemon();
     lastTimeSwitched = player.overlapping(demon);
   }
 
 
 
-
+  player.overlap(demon, loseHealthToDemon);
   player.overlap(crab, loseHealth);
   fireball.overlap(crab, isCrabHit);
   player.overlap(orc, loseHealth);
@@ -774,7 +776,7 @@ function checkCollision(){
   player.overlap(potion, addHealth);
   player.overlap(crab, isCrabStruck);
   player.overlap(orc, isOrcStrcuk);
-  player.overlap(chomper, isOrcStrcuk);
+  player.overlap(chomper, isChomperStruck);
 
 }
 
@@ -782,7 +784,7 @@ function checkCollision(){
 function isCrabHit(){
   for (let i = 0; i< crab.length; i++){
     if(fireball.overlapping(crab[i])){
-      if( maxHealth >= health && random(100)> 50){
+      if( maxHealth > health && random(100)> 50){
         new potion.Sprite(crab[i].x, crab[i].y);
       }
       crab[i].remove();
@@ -794,7 +796,7 @@ function isCrabHit(){
 function isOrcHit(){
   for (let i = 0; i< orc.length; i++){
     if(fireball.overlapping(orc[i])){
-      if( maxHealth >= health && random(100)> 50){
+      if( maxHealth > health && random(100)> 50){
         new potion.Sprite(orc[i].x, orc[i].y);
       }
       orc[i].remove();
@@ -806,7 +808,7 @@ function isOrcHit(){
 function isChomperHit(){
   for (let i = 0; i< chomper.length; i++){
     if(fireball.overlapping(chomper[i])){
-      if( maxHealth >= health && random(100)> 50){
+      if( maxHealth > health && random(100)> 50){
         new potion.Sprite(chomper[i].x, chomper[i].y);
       }
       chomper[i].remove();
@@ -818,11 +820,17 @@ function isChomperHit(){
 function isCrabStruck(){
   for (let i = 0; i< crab.length; i++){
     if(player.overlapping(crab[i]) && (player.ani.name === "a_right" || player.ani.name === "a_left" || player.ani.name === "a_up" || player.ani.name === "a_down")){
-      if( maxHealth >= health && random(100)> 50){
+      if( maxHealth > health && random(100)> 50){
         new potion.Sprite(crab[i].x, crab[i].y);
       }
       crab[i].remove();
       counter --;
+    }
+    else{
+      health -= 5;
+      if(health <= 0){
+        state = 3;
+      }
     }
   }
 }
@@ -830,11 +838,17 @@ function isCrabStruck(){
 function isOrcStrcuk(){
   for (let i = 0; i< orc.length; i++){
     if(player.overlapping(orc[i]) && (player.ani.name === "a_right" || player.ani.name === "a_left" || player.ani.name === "a_up" || player.ani.name === "a_down")){
-      if( maxHealth >= health && random(100)> 50){
+      if( maxHealth > health && random(100)> 50){
         new potion.Sprite(orc[i].x, orc[i].y);
       }
       orc[i].remove();
       counter --;
+    }
+    else{
+      health -= 5;
+      if(health <= 0){
+        state = 3;
+      }
     }
   }
 }
@@ -842,11 +856,17 @@ function isOrcStrcuk(){
 function isChomperStruck(){
   for (let i = 0; i< chomper.length; i++){
     if(player.overlapping(chomper[i]) && (player.ani.name === "a_right" || player.ani.name === "a_left" || player.ani.name === "a_up" || player.ani.name === "a_down")){
-      if( maxHealth >= health && random(100)> 50){
+      if( maxHealth > health && random(100)> 50){
         new potion.Sprite(chomper[i].x, chomper[i].y);
       }
       chomper[i].remove();
       counter --;
+    }
+    else{
+      health -= 5;
+      if(health <= 0){
+        state = 3;
+      }
     }
   }
 }
@@ -934,7 +954,7 @@ function touchingDoor2(){
     state = 0;
   }
   if (state === 4 && demon.alive === true) {
-    bossMusic.play();
+    bossMusic.loop();
     demon = new Sprite(width/2, height/2 - 50, 288, 160);
     counter++;
   }
@@ -994,6 +1014,15 @@ function touchingDoor4(){
 function loseHealth(){
   if (immortal === false) {
     health -= 5;
+    if(health <= 0){
+      state = 3;
+    }
+  }
+}
+
+function loseHealthToDemon(){
+  if (immortal === false) {
+    health -= 10;
     if(health <= 0){
       state = 3;
     }
