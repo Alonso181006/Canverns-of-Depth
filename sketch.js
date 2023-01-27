@@ -522,7 +522,7 @@ function orcUpdate(){
 
 function chomperUpdate(){
   for( let i = 0; i < chomper.length; i++){
-    chomper[i].moveTowards(player.position.x, player.position.y, 0.03);
+    chomper[i].moveTowards(player.position.x, player.position.y, 0.005);
     if (chomper[i].x >= player.x){
       chomper[i].addAni("attack_left", chomper_left);
     }
@@ -950,12 +950,14 @@ function touchingDoor(){
   if (state === 1) {
     state = 2;
     new button.Sprite(511, 444);
-    new crab.Sprite(width/2, height/2);
-    new crab.Sprite(width/2 + 100, height/2);
+    new crab.Sprite(random(100, 700), random(60, 450));
+    new crab.Sprite(random(100, 700), random(60, 450));
+    new crab.Sprite(random(100, 700), random(60, 450));
+    new crab.Sprite(random(100, 700), random(60, 450));
     button.pressed = false;
     crab.friction = 0;
     crab.moveTowards(player.position.x, player.position.y, 0.01);
-    counter += 2;
+    counter += 4;
     player.position.y = 100;
   }
 }
@@ -991,11 +993,12 @@ function touchingDoor3(){
     state = 5;
     new button.Sprite(108, 295);
     button.pressed = false;
-    new orc.Sprite(width/2, height/2);
-    new orc.Sprite(width/2 + 100, height/2);
+    new orc.Sprite(random(100, 700), random(60, 450));
+    new orc.Sprite(random(100, 700), random(60, 450));
+    new orc.Sprite(random(100, 700), random(60, 450));
     orc.friction = 0;
     orc.moveTowards(player.position.x, player.position.y, 0.01);
-    counter += 2;
+    counter += 3;
     for( let i = 0; i < orc.length; i++){
       orc[i].hit = false;
     }
@@ -1015,11 +1018,12 @@ function touchingDoor4(){
     state = 6;
     new button.Sprite(919, 292);
     button.pressed = false;
-    new chomper.Sprite(width/2, height/2);
-    new chomper.Sprite(width/2 + 100, height/2);
+    new chomper.Sprite(random(100, 700), random(60, 450));
+    new chomper.Sprite(random(100, 700), random(60, 450));
+    new chomper.Sprite(random(100, 700), random(60, 450));
     chomper.friction = 0;
     chomper.moveTowards(player.position.x, player.position.y, 0.01);
-    counter += 2;
+    counter += 3;
     for( let i = 0; i < chomper.length; i++){
       chomper[i].hit = false;
     }
