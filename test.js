@@ -52,6 +52,7 @@ let orc, orc_idle_left,orc_idle_right, orc_attack_left, orc_attack_right;
 let previousState;
 let chomper, chomper_right, chomper_left;
 let potion, potionImage;
+let hole, black;
 
 
 
@@ -104,6 +105,8 @@ function preload() {
   buttonImageUp = loadImage("gameSprites/tile000.png" );
   buttonImageDown= loadImage("gameSprites/tile001.png");
 
+  hole = loadImage("gameSprites/wallSprites/hole/hole.png");
+  black = loadImage("gameSprites/wallSprites/hole/void.png");
 
   //load player
   player_right = loadAnimation(
@@ -352,7 +355,7 @@ function draw() {
       crab[i].hit = false;
     }
     if(counter !== 0){
-      display
+      display()
     }
     if (counter === 0){
       display();
@@ -387,6 +390,7 @@ function draw() {
     button.remove();
     orc.remove();
     fireballs.remove();
+    demon.remove();
     image(resetImage, 0, 0, width, height);
     buttonsPressed = 0;
     if(kb.pressing("r")){
@@ -732,6 +736,12 @@ function checkCollision(){
   if(player.overlapping(chomper) > lastTimeSwitched + damagePerSecond){
     loseHealth();
     lastTimeSwitched = player.overlapping(chomper);
+  }
+
+  if(player.overlapping(demon) > lastTimeSwitched + damagePerSecond){
+    loseHealth();
+    loseHealth();
+    lastTimeSwitched = player.overlapping(demon);
   }
 
 
