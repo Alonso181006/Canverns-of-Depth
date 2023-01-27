@@ -6,7 +6,7 @@ Isometric Rogue-like Dungeon Crawler inspired by Moonlighter
 
 - Player movement Y
 - Player combat Y
-  - Sword N
+  - Sword Y
 - Enemy attacks Y
 - different levels (jump from one to the other) Y
 - levels are traversal Y
@@ -24,9 +24,9 @@ Isometric Rogue-like Dungeon Crawler inspired by Moonlighter
 
 ## Nice to Have List
 - health bar Y
-- enemy drops items/potions
+- enemy drops items/potions Y
 - can sell items for gold
-- Boss level
+- Boss level Y
 - pause button
 - make a phone that you upgrade, sell, and can see instrcutions
 - bow
