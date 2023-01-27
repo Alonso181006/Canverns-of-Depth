@@ -44,7 +44,7 @@ let demon, demonIdle, demonRun, demonDamage, demons = 0;
 let immortal = false;
 let counter = 0;
 let startImage, resetImage;
-let song;
+let song, bossMusic;
 let openDoor;
 let closedDoor;
 let crab_attack;
@@ -67,7 +67,7 @@ function preload() {
 
   //load background music
   song = loadSound("gameSFX/seriousMusic.mp3");
-
+  song = loadSound("gameSFX/seriousMusic.mp3")
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
   sTile = loadImage("gameSprites/floorTileSprites/tile000.png");
