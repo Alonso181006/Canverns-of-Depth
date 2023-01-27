@@ -37,8 +37,8 @@ let doOnce = 0;
 let buttonImageUp, buttonImageDown;
 let buttonsPressed = 0;
 let buttonImage = "up";
-let lastTimeSwitched = -100;
-let damagePerSecond = 100;
+let lastTimeSwitched = 100;
+let damagePerSecond = 10000;
 let playerFacing = "left";
 let demon, demonIdle, demonRun, demonDamage, demons = 0;
 let immortal = false;
@@ -53,6 +53,7 @@ let previousState;
 let chomper, chomper_right, chomper_left;
 let potion, potionImage;
 let hole, black;
+let enemy
 
 
 
@@ -340,6 +341,10 @@ function draw() {
       state = 1;
       song.play();
       player.visible = true;
+      player.x = width/2
+      player.y = height/2
+      health = 50;
+      demonHealth = 100;
     }
   }
   //HomeBase
@@ -354,9 +359,6 @@ function draw() {
   //bottom room
   if (state === 2) {
     //create content 
-    for( let i = 0; i < crab.length; i++){
-      crab[i].hit = false;
-    }
     if(counter !== 0){
       display()
     }
@@ -364,18 +366,7 @@ function draw() {
       display();
     }
 
-    //Constantly update Player.x and Player.y
-    for( let i = 0; i < crab.length; i++){
-      crab[i].moveTowards(player.position.x, player.position.y, 0.01);
-      if(crab[i].x >= player.x -25 && crab[i].x <= player.x +25){
-        if(crab[i].y >= player.y -25 && crab[i].y <= player.y +25){
-          crab[i].addAni("attack", crab_attack);
-        }
-        else{
-          crab[i].ani = "idle";
-        }
-      }
-    }
+    crabUpdate();
 
     //Load Background
     lines = levelTwoLines;
@@ -405,7 +396,8 @@ function draw() {
       player.visible = true;
       player.x = width/2;
       player.y = height/2;
-      health = 20;
+      health = 50;
+      demonHealth = 100;
       song.play();
     }
     else if (counter === 0){
@@ -426,7 +418,7 @@ function draw() {
     demon.addAni("cleave", demonDamage);
     demon.ani = "idle";
     demon.friction = 4;
-    demon.moveTowards(player.position.x, player.position.y, 0.01);
+    demon.moveTowards(player.position.x, player.position.y, 0.005);
     demon.rotation = 0;
     updateDemonHealth(demonHealth, maxDemonHealth);
     if (player.overlapping(demon)) {
@@ -435,37 +427,26 @@ function draw() {
     else {
       demonWalk();
     }
+
+  if( millis() > lastTimeSwitched + damagePerSecond){
+      if(counter <= 4){
+        enemy = 1
+        if(enemy === 1){
+          new chomper.Sprite(demon.x, demon.y);
+          counter ++;
+        } 
+        lastTimeSwitched = millis();
+      }
+    }
+    chomper.rotation = 0;
+    chomperUpdate();
   }
 
   //Left Room
   if(state === 5){
     //display content 
-      display();
-
-    //Constantly update Player.x and Player.y
-    for( let i = 0; i < orc.length; i++){
-      orc[i].moveTowards(player.position.x, player.position.y, 0.01);
-      if (orc[i].x >= player.x){
-        if(orc[i].x >= player.x -35 && orc[i].x <= player.x +35){
-          if(orc[i].y >= player.y -35 && orc[i].y <= player.y +35){
-            orc[i].addAni("attack_left", orc_attack_left);
-          }
-          else{
-            orc[i].ani = "idle_left";
-          }
-        }
-      }
-      if (orc[i].x <= player.x){
-        if(orc[i].x >= player.x -35 && orc[i].x <= player.x +35){
-          if(orc[i].y >= player.y -35 && orc[i].y <= player.y +35){
-            orc[i].addAni("attack_right", orc_attack_right);
-          }
-          else{
-            orc[i].ani = "idle_right";
-          }
-        }
-      }
-    }
+    display();
+    orcUpdate();
 
     //Load Background
     lines = levelFourLines;
@@ -479,17 +460,7 @@ function draw() {
     // display content
     display();
 
-    //Constantly update Player.x and Player.y
-    for( let i = 0; i < chomper.length; i++){
-      chomper[i].moveTowards(player.position.x, player.position.y, 0.01);
-      if (chomper[i].x >= player.x){
-        chomper[i].addAni("attack_left", chomper_left);
-      }
-      if (chomper[i].x <= player.x){
-        chomper[i].addAni("attack_right", chomper_right);
-      }
-    }
-
+    chomperUpdate();
 
     //Create Background
     lines = levelFiveLines;
@@ -519,6 +490,60 @@ function draw() {
   checkCollision();
   if(state !== 0 && state !==3){
     updateHealth(player.position.x, player.position.y, health, maxHealth);
+  }
+}
+
+function orcUpdate(){
+  //Constantly update Player.x and Player.y
+  for( let i = 0; i < orc.length; i++){
+    orc[i].moveTowards(player.position.x, player.position.y, 0.03);
+    if (orc[i].x >= player.x){
+      if(orc[i].x >= player.x -35 && orc[i].x <= player.x +35){
+        if(orc[i].y >= player.y -35 && orc[i].y <= player.y +35){
+          orc[i].addAni("attack_left", orc_attack_left);
+        }
+        else{
+          orc[i].ani = "idle_left";
+        }
+      }
+    }
+    if (orc[i].x <= player.x){
+      if(orc[i].x >= player.x -35 && orc[i].x <= player.x +35){
+        if(orc[i].y >= player.y -35 && orc[i].y <= player.y +35){
+          orc[i].addAni("attack_right", orc_attack_right);
+        }
+        else{
+          orc[i].ani = "idle_right";
+        }
+      }
+    }
+  }
+}
+
+function chomperUpdate(){
+  for( let i = 0; i < chomper.length; i++){
+    chomper[i].moveTowards(player.position.x, player.position.y, 0.03);
+    if (chomper[i].x >= player.x){
+      chomper[i].addAni("attack_left", chomper_left);
+    }
+    if (chomper[i].x <= player.x){
+      chomper[i].addAni("attack_right", chomper_right);
+    }
+  }
+}
+
+function crabUpdate(){
+  //Constantly update Player.x and Player.y
+  for( let i = 0; i < crab.length; i++){
+    crab[i].moveTowards(player.position.x, player.position.y, 0.03);
+    if(crab[i].x >= player.x -25 && crab[i].x <= player.x +25){
+      if(crab[i].y >= player.y -25 && crab[i].y <= player.y +25){
+        crab[i].addAni("attack", crab_attack);
+      }
+      else{
+        crab[i].ani = "idle";
+      }
+    }
   }
 }
 
@@ -753,7 +778,7 @@ function checkCollision(){
 
 
 
-  player.overlap(demon, loseHealthToDemon);
+  player.overlap(demon, loseHealth);
   player.overlap(crab, loseHealth);
   fireball.overlap(crab, isCrabHit);
   player.overlap(orc, loseHealth);
@@ -772,7 +797,6 @@ function checkCollision(){
   player.overlap(door3, touchingDoor3);
   player.overlap(door4, touchingDoor4);
   player.overlap(button, buttonIsPressed);
-  player.overlap(demon, demonCleave);
   player.overlap(potion, addHealth);
   player.overlap(crab, isCrabStruck);
   player.overlap(orc, isOrcStrcuk);
