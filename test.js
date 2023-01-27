@@ -67,7 +67,7 @@ function preload() {
 
   //load background music
   song = loadSound("gameSFX/seriousMusic.mp3");
-  song = loadSound("gameSFX/seriousMusic.mp3")
+  bossMusic = loadSound("gameSFX/why-do-i-hear-boss-music.mp3")
   //load images for tiles
   bg = loadImage("gameSprites/blackBg.jpg");
   sTile = loadImage("gameSprites/floorTileSprites/tile000.png");
@@ -330,6 +330,8 @@ function putInArray() {
 function draw() {
   //Start Screen
   if (state === 0){
+    demon.alive = true;
+    bossMusic.stop();
     image(startImage, 0, 0, width, height);
     player.visible =  false;
     buttonsPressed = 0;
@@ -384,6 +386,9 @@ function draw() {
 
   //End room
   if(state === 3){
+    song.play();
+    demon.alive = true;
+    bossMusic.stop();
     background(0);
     player.visible = false;
     crab.remove();
@@ -929,6 +934,7 @@ function touchingDoor2(){
     state = 0;
   }
   if (state === 4 && demon.alive === true) {
+    bossMusic.play();
     demon = new Sprite(width/2, height/2 - 50, 288, 160);
     counter++;
   }
